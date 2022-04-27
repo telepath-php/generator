@@ -39,10 +39,13 @@ class GenerateTypes extends Command
      */
     public function handle()
     {
-        $content = Cache::remember('telegram-bot-api-page', now()->addDays(1), function () {
-            $response = Http::get('https://core.telegram.org/bots/api');
-            return $response->body();
-        });
+//        $content = Cache::remember('telegram-bot-api-page', now()->addDays(1), function () {
+//            $response = Http::get('https://core.telegram.org/bots/api');
+//            return $response->body();
+//        });
+
+        $response = Http::get('https://core.telegram.org/bots/api');
+        $content = $response->body();
 
         $srcPath = Str::finish($this->option('path') ?? 'src', '/');
         $namespace = Str::finish($this->option('namespace') ?? 'Tii\\Telepath\\', '\\');
