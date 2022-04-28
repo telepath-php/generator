@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Telegram\Field;
 use App\Telegram\Type;
 use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
@@ -97,14 +98,18 @@ class TypeParser extends Parser
                 $commonFieldNames = $commonFieldNames->intersect($this->types[$child]->fields->pluck('name'));
             }
 
+            // Add common fields to parent
+            $this->types[$parent]->fields = $this->types[$children->first()]->fields->whereIn('name', $commonFieldNames);
+            $this->types[$parent]->fields->each(
+                function (Field $field) {
+                    $field->description = preg_replace('/, (must be|always) .+$/u', '', $field->description);
+                }
+            );
+
             // Remove common fields from children
             foreach ($children as $child) {
                 $this->types[$child]->fields = $this->types[$child]->fields->whereNotIn('name', $commonFieldNames);
             }
-
-            // Add common fields to parent
-            $this->types[$parent]->fields = $this->types[$children->first()]->fields->whereIn('name',
-                $commonFieldNames);
 
         }
     }

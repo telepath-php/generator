@@ -4,17 +4,17 @@ namespace App\Telegram;
 
 class Field
 {
-    public readonly bool $optional;
+    public bool $optional;
 
-    public readonly string $phpType;
+    public string $phpType;
 
-    public readonly ?string $phpDocType;
+    public ?string $phpDocType;
 
     public function __construct(
-        public readonly string $name,
-        public readonly string $type,
-        public readonly string $description,
-        protected readonly string $namespace
+        public string $name,
+        public string $type,
+        public string $description,
+        protected string $namespace
     ) {
         $this->optional = $this->isOptional();
         $this->phpType = $this->getPhpType($this->type);
