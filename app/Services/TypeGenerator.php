@@ -10,67 +10,39 @@ use Laminas\Code\Generator\FileGenerator;
 use Laminas\Code\Generator\MethodGenerator;
 use Laminas\Code\Generator\ParameterGenerator;
 use Laminas\Code\Generator\PropertyGenerator;
+use Nette\PhpGenerator\PhpFile;
+use Nette\PhpGenerator\PhpNamespace;
 use function PHPUnit\Framework\isNull;
 
 class TypeGenerator
 {
 
-    public function generate(Type $type)
+    public function generate(Type $type): string
     {
-        $properties = [];
-        foreach ($type->fields() as $field) {
-            $property = new PropertyGenerator(
-                name: $field->name,
-                flags: PropertyGenerator::FLAG_PUBLIC
-            );
+        $file = new PhpFile();
+        $file->addComment('This file is auto-generated.');
 
-            $property->omitDefaultValue();
+        $namespace = $file->addNamespace($type->namespace);
+        $class = $namespace->addClass($type->name);
+        $class->setExtends($type->extends);
+
+        foreach ($type->fields() as $field) {
+
+            $property = $class->addProperty($field->name);
+            $property->setType($field->phpType);
+            $property->setPublic();
 
             if ($field->phpDocType !== null) {
-                $property->setDocBlock(new DocBlockGenerator(
-                    tags: [['name' => 'var', 'description' => $field->phpDocType]]
-                ));
+                $property->addComment('@var ' . $namespace->simplifyType($field->phpDocType));
             }
 
-            $properties[] = $property;
         }
 
-        $methods = [
-            new MethodGenerator(
-                name: '__construct',
-                parameters: [(new ParameterGenerator('data', 'array', []))],
-                body: 'parent::__construct($data);',
-            )
-        ];
+//        $construct = $class->addMethod('__construct');
+//        $construct->addParameter('data')->setType('array')->setDefaultValue([]);
+//        $construct->addBody('parent::__construct($data);');
 
-        $file = FileGenerator::fromArray([
-            'classes'  => [
-                new ClassGenerator(
-                    name: $type->name,
-                    namespaceName: $type->namespace,
-                    flags: null,
-                    extends: $type->extends,
-                    interfaces: [],
-                    properties: $properties,
-                    methods: $methods
-                )
-            ],
-            'docblock' => new DocBlockGenerator(
-                shortDescription: 'This file was automatically generated!'
-            )
-        ]);
-
-        $text = $file->generate();
-
-        foreach ($type->fields() as $field) {
-            $text = str_replace(
-                search: '$' . $field->name . ';',
-                replace: $field->phpType . ' $' . $field->name . ';',
-                subject: $text
-            );
-        }
-
-        return $text;
+        return (string) $file;
     }
 
 }

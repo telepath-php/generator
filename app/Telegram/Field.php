@@ -14,6 +14,7 @@ class Field
         public readonly string $name,
         public readonly string $type,
         public readonly string $description,
+        protected readonly string $namespace
     ) {
         $this->optional = $this->isOptional();
         $this->phpType = $this->getPhpType($this->type);
@@ -47,7 +48,7 @@ class Field
             'Integer'                  => 'int',
             'Float', 'Float number'    => 'float',
             'Boolean', 'True', 'False' => 'bool',
-            default                    => $type,
+            default                    => $this->namespace . '\\' . $type,
         };
     }
 
@@ -58,12 +59,17 @@ class Field
             return $this->getPhpDocType($subType) . '[]';
         }
 
+        $orParts = explode(' or ', $type, 2);
+        if (count($orParts) > 1) {
+            return $this->getPhpDocType($orParts[0]) . '|' . $this->getPhpDocType($orParts[1]);
+        }
+
         return match ($type) {
             'String'                   => 'string',
             'Integer'                  => 'int',
             'Float', 'Float number'    => 'float',
             'Boolean', 'True', 'False' => 'bool',
-            default                    => $type,
+            default                    => $this->namespace . '\\' . $type,
         };
     }
 

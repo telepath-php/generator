@@ -32,7 +32,7 @@ class Type implements \ArrayAccess
             $type = $dataCells->getNode(1)->textContent;
             $description = $dataCells->getNode(2)->textContent;
 
-            $this->fields[] = new Field($field, $type, $description);
+            $this->fields[] = new Field($field, $type, $description, $this->namespace);
         }
 
         return $this;
