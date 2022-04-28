@@ -3,16 +3,8 @@
 namespace App\Services;
 
 use App\Telegram\Type;
-use Laminas\Code\Generator\ClassGenerator;
-use Laminas\Code\Generator\DocBlock\Tag\ParamTag;
-use Laminas\Code\Generator\DocBlockGenerator;
-use Laminas\Code\Generator\FileGenerator;
-use Laminas\Code\Generator\MethodGenerator;
-use Laminas\Code\Generator\ParameterGenerator;
-use Laminas\Code\Generator\PropertyGenerator;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
-use function PHPUnit\Framework\isNull;
 
 class TypeGenerator
 {
