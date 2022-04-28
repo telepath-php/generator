@@ -169,7 +169,10 @@ class Parser implements \ArrayAccess
 
             if ($childNode instanceof \DOMElement && $childNode->nodeName === 'img') {
                 $text .= $childNode->getAttribute('alt') ?? '';
+                continue;
             }
+
+            $text .= $childNode->textContent;
         }
 
         return $text;
