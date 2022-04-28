@@ -16,6 +16,7 @@ class MethodGenerator
     public function __construct(string $name)
     {
         $this->file = new PhpFile();
+        $this->file->addComment('This file is auto-generated.');
 
         $split = str($name)->explode('\\');
         $this->namespace = $this->file->addNamespace($split->slice(0, -1)->join('\\'));
