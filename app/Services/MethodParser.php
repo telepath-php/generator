@@ -9,16 +9,12 @@ use Symfony\Component\DomCrawler\Crawler;
 class MethodParser
 {
 
-    protected ?string $methodName;
-    protected ?string $methodDescription;
-
     /** @var Method[] */
     public Collection $methods;
 
     public function __construct(
         protected string $namespace
-    )
-    {
+    ) {
         $this->methods = new Collection();
     }
 
@@ -27,44 +23,73 @@ class MethodParser
         $crawler = new Crawler();
         $crawler->addHtmlContent($content);
 
-        $elements = $crawler->filter('h4, table');
+        $methods = $this->filterMethods($crawler);
+        foreach ($methods as ['heading' => $heading, 'paragraph' => $paragraph, 'table' => $table]) {
 
-        /** @var \DOMElement $element */
-        foreach ($elements as $element) {
-            if ($element->nodeName === 'h4') {
-                $this->methodName = $element->textContent;
+            $name = $heading->textContent;
+            $description = Parser::parseText($paragraph);
 
-                foreach ((new Crawler($element))->nextAll() as $pNode) {
-                    if ($pNode->nodeName === 'p') {
-                        $this->methodDescription = Parser::parseText($pNode);
-                        break;
-                    }
-                }
-                continue;
+            $method = new Method($name, $description, $this->namespace);
+
+            if (! is_null($table)) {
+                $method->parseTable($table);
             }
 
-            if ($this->methodName === null) {
-                continue;
-            }
+            $this->methods[$name] = $method;
 
-            if ($element->nodeName === 'table') {
-                $this->parseTable(new Crawler($element));
-                continue;
-            }
         }
 
         return $this->methods;
     }
 
-    protected function parseTable(Crawler $crawler)
+    /**
+     * @param  Crawler  $crawler
+     * @return array{ array{ heading: \DOMElement, paragraph: \DOMElement, table: \DOMElement} }
+     */
+    protected function filterMethods(Crawler $crawler): array
     {
-        $firstHeading = $crawler->filter('th')->first()->text();
-        if ($firstHeading !== 'Parameter') {
-            return;
+        $methods = [];
+
+        /** @var \DOMElement $heading */
+        foreach ($crawler->filter('h4') as $heading) {
+            $paragraph = $this->findNext($heading, 'p', 'h4');
+            $table = $this->findNext($heading, 'table', 'h4');
+
+            $isMethod = $this->tableHasParameter($table) || $this->paragraphContainsMethod($paragraph);
+
+            if (! $isMethod) {
+                continue;
+            }
+
+            $methods[] = ['heading' => $heading, 'paragraph' => $paragraph, 'table' => $table];
         }
 
-        // We have a METHOD!
-        $this->methods[$this->methodName] = (new Method($this->methodName, $this->methodDescription, $this->namespace))->parseTable($crawler);
+        return $methods;
+    }
+
+    protected function findNext(\DOMNode $startNode, string $nodeName, string $abort = null): ?\DOMElement
+    {
+        foreach ((new Crawler($startNode))->nextAll() as $node) {
+            if ($abort !== null && $node->nodeName === $abort) {
+                return null;
+            }
+
+            if ($node instanceof \DOMElement && $node->nodeName === $nodeName) {
+                return $node;
+            }
+        }
+
+        return null;
+    }
+
+    protected function tableHasParameter(?\DOMElement $table): bool
+    {
+        return ! is_null($table) && (new Crawler($table))->filter('th')->first()->text() === 'Parameter';
+    }
+
+    protected function paragraphContainsMethod(?\DOMElement $paragraph)
+    {
+        return str($paragraph->textContent)->explode('.')->strOfFirst()->test('/\bmethod\b/');
     }
 
 }

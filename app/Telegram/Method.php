@@ -21,9 +21,9 @@ class Method
         $this->parameter = new Collection();
     }
 
-    public function parseTable(Crawler $crawler)
+    public function parseTable(\DOMElement $table)
     {
-        $rows = $crawler->filter('tbody > tr');
+        $rows = (new Crawler($table))->filter('tbody > tr');
 
         foreach ($rows as $row) {
             $dataCells = (new Crawler($row))->filter('td');
