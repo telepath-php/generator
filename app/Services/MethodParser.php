@@ -6,7 +6,7 @@ use App\Telegram\Method;
 use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 
-class MethodParser
+class MethodParser extends Parser
 {
 
     /** @var Method[] */
@@ -52,8 +52,8 @@ class MethodParser
 
         /** @var \DOMElement $heading */
         foreach ($crawler->filter('h4') as $heading) {
-            $paragraph = $this->findNext($heading, 'p', 'h4');
-            $table = $this->findNext($heading, 'table', 'h4');
+            $paragraph = $this->findNext($heading, 'p', ['h4', 'h3']);
+            $table = $this->findNext($heading, 'table', ['h4', 'h3']);
 
             $isMethod = $this->tableHasParameter($table) || $this->paragraphContainsMethod($paragraph);
 
@@ -65,21 +65,6 @@ class MethodParser
         }
 
         return $methods;
-    }
-
-    protected function findNext(\DOMNode $startNode, string $nodeName, string $abort = null): ?\DOMElement
-    {
-        foreach ((new Crawler($startNode))->nextAll() as $node) {
-            if ($abort !== null && $node->nodeName === $abort) {
-                return null;
-            }
-
-            if ($node instanceof \DOMElement && $node->nodeName === $nodeName) {
-                return $node;
-            }
-        }
-
-        return null;
     }
 
     protected function tableHasParameter(?\DOMElement $table): bool

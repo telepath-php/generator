@@ -27,9 +27,11 @@ class Type implements \ArrayAccess
         $this->namespace = $namespaceParts->slice(0, -1)->join('\\');
     }
 
-    public function parseTable(Crawler $table)
+    public function parseTable(\DOMElement $table)
     {
-        $rows = $table->filter('tbody > tr');
+        $crawler = new Crawler($table);
+
+        $rows = $crawler->filter('tbody > tr');
 
         foreach ($rows as $row) {
             $dataCells = (new Crawler($row))->filter('td');

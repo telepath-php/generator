@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Arr;
+use Symfony\Component\DomCrawler\Crawler;
+
 class Parser
 {
 
@@ -25,6 +28,23 @@ class Parser
         }
 
         return $text;
+    }
+
+    protected function findNext(\DOMNode $startNode, string $nodeName, string|array $abort = null): ?\DOMElement
+    {
+        $abort = Arr::wrap($abort);
+
+        foreach ((new Crawler($startNode))->nextAll() as $node) {
+            if ($abort !== null && in_array($node->nodeName, $abort)) {
+                return null;
+            }
+
+            if ($node instanceof \DOMElement && $node->nodeName === $nodeName) {
+                return $node;
+            }
+        }
+
+        return null;
     }
 
 }

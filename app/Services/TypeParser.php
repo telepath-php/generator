@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Telegram\Type;
+use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\DomCrawler\Test\Constraint\CrawlerSelectorAttributeValueSame;
 
-class TypeParser implements \ArrayAccess
+class TypeParser extends Parser
 {
-    protected array $types = [];
+    public Collection $types;
 
     protected ?string $typeName = null;
 
@@ -19,6 +21,7 @@ class TypeParser implements \ArrayAccess
         protected string $namespace,
         protected string $parentClass,
     ) {
+        $this->types = new Collection();
     }
 
     public function parse(string $content)
@@ -26,115 +29,64 @@ class TypeParser implements \ArrayAccess
         $crawler = resolve(Crawler::class);
         $crawler->addHtmlContent($content);
 
-        $elements = $crawler->filter('h4, table, ul');
+        $types = $this->filterTypes($crawler);
 
-        foreach ($elements as $element) {
-            if ($element->nodeName === 'h4') {
-                $this->typeName = $element->textContent;
-                foreach ((new Crawler($element))->nextAll() as $pNode) {
-                    if ($pNode->nodeName === 'p') {
-                        $this->typeDescription = Parser::parseText($pNode);
-                        break;
-                    }
-                }
-                continue;
+        $inheritance = $this->parseInheritance($types);
+
+        foreach ($types as ['heading' => $heading, 'paragraph' => $paragraph, 'list' => $list, 'table' => $table]) {
+
+            $typeName = $heading->textContent;
+            $description = static::parseText($paragraph);
+
+            $class = $this->namespace . 'Telegram\\' . $typeName;
+            $extends = isset($inheritance[$typeName])
+                ? $this->namespace . 'Telegram\\' . $inheritance[$typeName]
+                : $this->parentClass;
+
+            $type = new Type($class, $extends, $description);
+
+            if (! is_null($table)) {
+                $type->parseTable($table);
             }
 
-            if ($this->typeName === null) {
-                continue;
-            }
-
-            $children = new Crawler($element);
-
-            if ($element->nodeName === 'ul') {
-                $this->parseList($children);
-                continue;
-            }
-
-            if ($element->nodeName === 'table') {
-                $this->parseTable($children);
-                continue;
-            }
+            $this->types[$typeName] = $type;
         }
 
-        $this->extractCommonFields();
+        $this->extractCommonFields($inheritance);
 
         return $this->types;
     }
 
-    /**
-     * @return Type[]
-     */
-    public function types(): array
+    protected function filterTypes(Crawler $crawler)
     {
-        return $this->types;
-    }
+        $types = [];
 
-    public function offsetUnset(mixed $offset): void
-    {
-        throw new \Exception('Types are readonly');
-    }
+        /** @var \DOMElement $heading */
+        foreach ($crawler->filter('h4') as $heading) {
+            $paragraph = $this->findNext($heading, 'p', ['h3', 'h4']);
+            $list = $this->findNext($heading, 'ul', ['h3', 'h4']);
+            $table = $this->findNext($heading, 'table', ['h3', 'h4']);
 
-    public function offsetExists(mixed $offset): bool
-    {
-        return isset($this->types[$offset]);
-    }
+            $isType = $this->tableHasField($table) || $this->listsChildClasses($list);
 
-    public function offsetGet(mixed $offset): mixed
-    {
-        return $this->types[$offset];
-    }
+            if (! $isType) {
+                continue;
+            }
 
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        throw new \Exception('Types are readonly');
-    }
-
-    protected function parseList(Crawler $crawler)
-    {
-        $listItems = $crawler->filter('li');
-        $invalidItems = $listItems->reduce(function (Crawler $node) {
-            $link = $node->filter('a');
-            return $link->count() !== 1
-                || substr($link->attr('href'), 0, 1) !== '#';
-        });
-
-        if ($invalidItems->count() > 0) {
-            return;
+            $types[] = [
+                'heading'   => $heading,
+                'paragraph' => $paragraph,
+                'list'      => $list,
+                'table'     => $table,
+            ];
         }
 
-        $childClasses = array_fill_keys(
-            collect($listItems)->map->textContent->toArray(),
-            $this->typeName
-        );
-        $this->parents = array_merge($this->parents, $childClasses);
-
-        $class = $this->namespace . 'Telegram\\' . $this->typeName;
-        $extends = $this->parentClass;
-        $this->types[$this->typeName] = new Type($class, $extends, $this->typeDescription);
-        $this->typeName = null;
+        return $types;
     }
 
-    protected function parseTable(Crawler $crawler)
+    protected function extractCommonFields(array $inheritance)
     {
-        $firstHeading = $crawler->filter('th')->first()->text();
-        if ($firstHeading !== 'Field') {
-            return;
-        }
-
-        // We have a TYPE!
-        $class = $this->namespace . 'Telegram\\' . $this->typeName;
-        $extends = isset($this->parents[$this->typeName])
-            ? $this->namespace . 'Telegram\\' . $this->parents[$this->typeName]
-            : $this->parentClass;
-
-        $this->types[$this->typeName] = (new Type($class, $extends, $this->typeDescription))->parseTable($crawler);
-        $this->typeName = null;
-    }
-
-    protected function extractCommonFields()
-    {
-        $parents = collect($this->parents)
+        $parents = collect($inheritance)
             ->mapToGroups(fn($item, $key) => [$item => $key]);
 
         foreach ($parents as $parent => $children) {
@@ -151,8 +103,52 @@ class TypeParser implements \ArrayAccess
             }
 
             // Add common fields to parent
-            $this->types[$parent]->fields = $this->types[$children->first()]->fields->whereIn('name', $commonFieldNames);
+            $this->types[$parent]->fields = $this->types[$children->first()]->fields->whereIn('name',
+                $commonFieldNames);
 
         }
+    }
+
+    protected function tableHasField(?\DOMElement $table): bool
+    {
+        return ! is_null($table) && (new Crawler($table))->filter('th')->first()->text() === 'Field';
+    }
+
+    protected function listsChildClasses(?\DOMElement $list)
+    {
+        if (is_null($list)) {
+            return false;
+        }
+
+        $items = (new Crawler($list))->filter('li');
+        $invalidItems = $items->reduce(function (Crawler $node) {
+            $link = $node->filter('a');
+            return $link->count() !== 1
+                || substr($link->attr('href'), 0, 1) !== '#';
+        });
+
+        return $invalidItems->count() === 0;
+    }
+
+    protected function parseInheritance(array $types)
+    {
+        $inheritance = [];
+
+        foreach ($types as ['heading' => $heading, 'paragraph' => $paragraph, 'list' => $list, 'table' => $table]) {
+            if (is_null($list)) {
+                continue;
+            }
+
+            $parent = $heading->textContent;
+            $children = array_fill_keys(
+                collect((new Crawler($list))->filter('li'))
+                    ->map->textContent->toArray(),
+                $parent
+            );
+
+            $inheritance = array_merge($inheritance, $children);
+        }
+
+        return $inheritance;
     }
 }
