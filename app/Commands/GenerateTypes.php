@@ -2,7 +2,7 @@
 
 namespace App\Commands;
 
-use App\Services\Parser;
+use App\Services\TypeParser;
 use App\Services\TypeGenerator;
 use GuzzleHttp\Client;
 use Illuminate\Console\Scheduling\Schedule;
@@ -54,7 +54,7 @@ class GenerateTypes extends Command
         $namespace = Str::finish($this->option('namespace') ?? 'Tii\\Telepath\\', '\\');
         $parentClass = $this->option('parent-class') ?? 'Tii\\Telepath\\Type';
 
-        $parser = resolve(Parser::class, ['namespace' => $namespace, 'parentClass' => $parentClass]);
+        $parser = resolve(TypeParser::class, ['namespace' => $namespace, 'parentClass' => $parentClass]);
         $parser->parse($content);
 
         $generator = resolve(TypeGenerator::class);
@@ -62,7 +62,8 @@ class GenerateTypes extends Command
             $file = $generator->generate($type);
             $path = str_replace([$namespace, '\\'], ['', '/'], $type->namespace) . '/';
 
-            Storage::put($srcPath . $path . $type->name . '.php', $file);
+            File::ensureDirectoryExists($srcPath . $path);
+            File::put($srcPath . $path . $type->name . '.php', $file);
         }
     }
 
