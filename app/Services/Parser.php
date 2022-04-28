@@ -33,7 +33,7 @@ class Parser implements \ArrayAccess
                 $this->typeName = $element->textContent;
                 foreach ((new Crawler($element))->nextAll() as $pNode) {
                     if ($pNode->nodeName === 'p') {
-                        $this->typeDescription = $pNode->textContent;
+                        $this->typeDescription = static::parseText($pNode);
                         break;
                     }
                 }
@@ -154,5 +154,24 @@ class Parser implements \ArrayAccess
             $this->types[$parent]->fields = $this->types[$children->first()]->fields->whereIn('name', $commonFieldNames);
 
         }
+    }
+
+    public static function parseText(\DOMNode $node)
+    {
+        $text = '';
+
+        /** @var \DOMNode $childNode */
+        foreach ($node->childNodes as $childNode) {
+            if ($childNode instanceof \DOMText) {
+                $text .= $childNode->wholeText;
+                continue;
+            }
+
+            if ($childNode instanceof \DOMElement && $childNode->nodeName === 'img') {
+                $text .= $childNode->getAttribute('alt') ?? '';
+            }
+        }
+
+        return $text;
     }
 }

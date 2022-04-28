@@ -2,6 +2,7 @@
 
 namespace App\Telegram;
 
+use App\Services\Parser;
 use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -35,7 +36,7 @@ class Type implements \ArrayAccess
 
             $field = $dataCells->getNode(0)->textContent;
             $type = $dataCells->getNode(1)->textContent;
-            $description = $dataCells->getNode(2)->textContent;
+            $description = Parser::parseText($dataCells->getNode(2));
 
             $this->fields[] = new Field($field, $type, $description, $this->namespace);
         }
