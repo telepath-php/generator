@@ -67,7 +67,7 @@ class TypeParser extends Parser
             $list = $this->findNext($heading, 'ul', ['h3', 'h4']);
             $table = $this->findNext($heading, 'table', ['h3', 'h4']);
 
-            $isType = $this->tableHasField($table) || $this->listsChildClasses($list);
+            $isType = $this->tableHasField($table) || $this->listsChildClasses($list) || $this->paragraphContainsObject($paragraph);
 
             if (! $isType) {
                 continue;
@@ -150,5 +150,10 @@ class TypeParser extends Parser
         }
 
         return $inheritance;
+    }
+
+    protected function paragraphContainsObject(?\DOMElement $paragraph)
+    {
+        return str($paragraph->textContent)->explode('.')->strOfFirst()->test('/\bobject\b/');
     }
 }
