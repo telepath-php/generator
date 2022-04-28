@@ -8,6 +8,7 @@ use Symfony\Component\DomCrawler\Crawler;
 class Type implements \ArrayAccess
 {
     public readonly string $name;
+
     public readonly string $namespace;
 
     /** @var Field[] */
@@ -15,7 +16,8 @@ class Type implements \ArrayAccess
 
     public function __construct(
         public readonly string $class,
-        public readonly ?string $extends = null
+        public readonly ?string $extends = null,
+        public readonly ?string $description = null,
     ) {
         $this->fields = new Collection();
 

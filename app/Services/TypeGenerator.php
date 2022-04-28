@@ -17,6 +17,7 @@ class TypeGenerator
         $namespace = $file->addNamespace($type->namespace);
         $class = $namespace->addClass($type->name);
         $class->setExtends($type->extends);
+        $class->addComment($type->description);
 
         foreach ($type->fields as $field) {
 

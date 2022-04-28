@@ -11,6 +11,8 @@ class Parser implements \ArrayAccess
 
     protected ?string $typeName = null;
 
+    protected ?string $typeDescription = null;
+
     protected array $parents = [];
 
     public function __construct(
@@ -29,6 +31,12 @@ class Parser implements \ArrayAccess
         foreach ($elements as $element) {
             if ($element->nodeName === 'h4') {
                 $this->typeName = $element->textContent;
+                foreach ((new Crawler($element))->nextAll() as $pNode) {
+                    if ($pNode->nodeName === 'p') {
+                        $this->typeDescription = $pNode->textContent;
+                        break;
+                    }
+                }
                 continue;
             }
 
@@ -103,7 +111,7 @@ class Parser implements \ArrayAccess
 
         $class = $this->namespace . 'Telegram\\' . $this->typeName;
         $extends = $this->parentClass;
-        $this->types[$this->typeName] = new Type($class, $extends);
+        $this->types[$this->typeName] = new Type($class, $extends, $this->typeDescription);
         $this->typeName = null;
     }
 
@@ -120,7 +128,7 @@ class Parser implements \ArrayAccess
             ? $this->namespace . 'Telegram\\' . $this->parents[$this->typeName]
             : $this->parentClass;
 
-        $this->types[$this->typeName] = (new Type($class, $extends))->parseTable($crawler);
+        $this->types[$this->typeName] = (new Type($class, $extends, $this->typeDescription))->parseTable($crawler);
         $this->typeName = null;
     }
 
@@ -144,7 +152,7 @@ class Parser implements \ArrayAccess
 
             // Add common fields to parent
             $this->types[$parent]->fields = $this->types[$children->first()]->fields->whereIn('name', $commonFieldNames);
-            
+
         }
     }
 }
