@@ -26,6 +26,10 @@ class TypeGenerator
             $property->setPublic();
             $property->addComment($field->description);
 
+            if ($field->optional) {
+                $property->setNullable();
+            }
+
             if ($field->phpDocType !== null) {
                 $property->addComment('@var ' . $namespace->simplifyType($field->phpDocType));
             }
