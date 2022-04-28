@@ -49,6 +49,8 @@ class Parser implements \ArrayAccess
             }
         }
 
+        $this->extractCommonFields();
+
         return $this->types;
     }
 
@@ -120,5 +122,29 @@ class Parser implements \ArrayAccess
 
         $this->types[$this->typeName] = (new Type($class, $extends))->parseTable($crawler);
         $this->typeName = null;
+    }
+
+    protected function extractCommonFields()
+    {
+        $parents = collect($this->parents)
+            ->mapToGroups(fn($item, $key) => [$item => $key]);
+
+        foreach ($parents as $parent => $children) {
+
+            // Collect common field names
+            $commonFieldNames = $this->types[$children->first()]->fields->pluck('name');
+            foreach ($children as $child) {
+                $commonFieldNames = $commonFieldNames->intersect($this->types[$child]->fields->pluck('name'));
+            }
+
+            // Remove common fields from children
+            foreach ($children as $child) {
+                $this->types[$child]->fields = $this->types[$child]->fields->whereNotIn('name', $commonFieldNames);
+            }
+
+            // Add common fields to parent
+            $this->types[$parent]->fields = $this->types[$children->first()]->fields->whereIn('name', $commonFieldNames);
+            
+        }
     }
 }

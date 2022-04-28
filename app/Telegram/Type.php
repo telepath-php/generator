@@ -2,6 +2,7 @@
 
 namespace App\Telegram;
 
+use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 
 class Type implements \ArrayAccess
@@ -9,14 +10,16 @@ class Type implements \ArrayAccess
     public readonly string $name;
     public readonly string $namespace;
 
-    protected array $fields = [];
+    /** @var Field[] */
+    public Collection $fields;
 
     public function __construct(
         public readonly string $class,
         public readonly ?string $extends = null
     ) {
-        $namespaceParts = str($class)->explode('\\');
+        $this->fields = new Collection();
 
+        $namespaceParts = str($class)->explode('\\');
         $this->name = $namespaceParts->last();
         $this->namespace = $namespaceParts->slice(0, -1)->join('\\');
     }
@@ -36,14 +39,6 @@ class Type implements \ArrayAccess
         }
 
         return $this;
-    }
-
-    /**
-     * @return Field[]
-     */
-    public function fields(): array
-    {
-        return $this->fields;
     }
 
     public function offsetExists(mixed $offset): bool
