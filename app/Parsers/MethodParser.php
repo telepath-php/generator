@@ -27,7 +27,7 @@ class MethodParser extends Parser
         foreach ($methods as ['heading' => $heading, 'paragraph' => $paragraph, 'table' => $table]) {
 
             $name = $heading->textContent;
-            $description = Parser::parseText($paragraph);
+            $description = static::parseText($paragraph);
 
             $method = new Method($name, $description, $this->namespace);
 

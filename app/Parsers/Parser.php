@@ -8,7 +8,7 @@ use Symfony\Component\DomCrawler\Crawler;
 class Parser
 {
 
-    public static function parseText(\DOMNode $node)
+    public static function parseText(\DOMNode $node): string
     {
         $text = '';
 
