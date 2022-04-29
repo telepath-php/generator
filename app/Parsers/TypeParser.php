@@ -1,22 +1,15 @@
 <?php
 
-namespace App\Services;
+namespace App\Parsers;
 
 use App\Telegram\Field;
 use App\Telegram\Type;
 use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\DomCrawler\Test\Constraint\CrawlerSelectorAttributeValueSame;
 
 class TypeParser extends Parser
 {
     public Collection $types;
-
-    protected ?string $typeName = null;
-
-    protected ?string $typeDescription = null;
-
-    protected array $parents = [];
 
     public function __construct(
         protected string $namespace,

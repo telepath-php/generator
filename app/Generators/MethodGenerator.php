@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Generators;
 
 use App\Telegram\Method;
 use Nette\PhpGenerator\PhpFile;
+use function App\Services\str_contains;
 
 class MethodGenerator
 {

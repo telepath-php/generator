@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Parsers;
 
 use Illuminate\Support\Arr;
 use Symfony\Component\DomCrawler\Crawler;

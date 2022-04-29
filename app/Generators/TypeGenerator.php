@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Services;
+namespace App\Generators;
 
 use App\Telegram\Type;
 use Nette\PhpGenerator\PhpFile;
-use Nette\PhpGenerator\PhpNamespace;
 
 class TypeGenerator
 {

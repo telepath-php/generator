@@ -2,13 +2,11 @@
 
 namespace App\Commands;
 
-use App\Services\MethodGenerator;
-use App\Services\MethodParser;
+use App\Generators\MethodGenerator;
+use App\Parsers\MethodParser;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
 
