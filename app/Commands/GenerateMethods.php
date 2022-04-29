@@ -43,10 +43,10 @@ class GenerateMethods extends Command
         $class = $this->option('class') ?? 'Tii\\Telepath\\Telegram';
         $namespace = Str::finish($this->option('namespace') ?? 'Tii\\Telepath\\Telegram', '\\');
 
-        $parser = resolve(MethodParser::class, ['namespace' => $namespace]);
+        $parser = new MethodParser($namespace);
         $methods = $parser->parse($content);
 
-        $generator = new MethodGenerator($class);
+        $generator = new MethodGenerator($class, $namespace);
         foreach ($methods as $method) {
             $generator->addMethod($method);
         }

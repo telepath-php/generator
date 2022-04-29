@@ -8,6 +8,43 @@ use Symfony\Component\DomCrawler\Crawler;
 class Parser
 {
 
+    public static function phpDocType(string $type, string $namespace = ''): string
+    {
+        if (str_starts_with($type, 'Array of')) {
+            $subType = substr($type, 9);
+            $arrayType = static::phpDocType($subType, $namespace);
+            return str_contains($arrayType, '|')
+                ? str_replace('|', '[]|', $arrayType) . '[]'
+                : $arrayType . '[]';
+        }
+
+        $parts = str($type)->split('/(?: or |, | and )/', 2);
+        if (count($parts) > 1) {
+            return static::phpDocType($parts[0], $namespace) . '|' . static::phpDocType($parts[1], $namespace);
+        }
+
+        $type = match ($type) {
+            'String'                   => 'string',
+            'Integer'                  => 'int',
+            'Float', 'Float number'    => 'float',
+            'Boolean', 'True', 'False' => 'bool',
+            default                    => $namespace . $type
+        };
+
+        return $type;
+    }
+
+    public static function phpType(string $type, string $namespace = ''): string
+    {
+        $type = static::phpDocType($type, $namespace);
+
+        if (str_ends_with($type, '[]')) {
+            return 'array';
+        }
+
+        return $type;
+    }
+
     public static function parseText(\DOMNode $node): string
     {
         $text = '';

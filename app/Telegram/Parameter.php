@@ -2,6 +2,8 @@
 
 namespace App\Telegram;
 
+use App\Parsers\Parser;
+
 class Parameter
 {
 
@@ -19,43 +21,14 @@ class Parameter
         return $this->required === 'Yes';
     }
 
-    public function phpDocType(string $type = null)
+    public function phpDocType()
     {
-        $type ??= $this->type;
-
-        if (str_starts_with($type, 'Array of')) {
-            $subType = substr($type, 9);
-            $arrayType = $this->phpDocType($subType);
-            return str_contains($arrayType, '|')
-                ? str_replace('|', '[]|', $arrayType) . '[]'
-                : $arrayType . '[]';
-        }
-
-        $parts = str($type)->split('/(?: or |, | and )/', 2);
-        if (count($parts) > 1) {
-            return $this->phpDocType($parts[0]) . '|' . $this->phpDocType($parts[1]);
-        }
-
-        $type = match ($type) {
-            'String'                   => 'string',
-            'Integer'                  => 'int',
-            'Float', 'Float number'    => 'float',
-            'Boolean', 'True', 'False' => 'bool',
-            default                    => $this->namespace . $type
-        };
-
-        return $type;
+        return Parser::phpDocType($this->type, $this->namespace);
     }
 
     public function phpType()
     {
-        $type = $this->phpDocType();
-
-        if (str_ends_with($type, '[]')) {
-            return 'array';
-        }
-
-        return $type;
+        return Parser::phpType($this->type, $this->namespace);
     }
 
 }
