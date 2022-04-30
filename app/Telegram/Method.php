@@ -36,6 +36,8 @@ class Method
             $this->parameter[] = new Parameter($name, $type, $required, $description, $this->namespace);
         }
 
+        $this->parameter = $this->parameter->sortByDesc(fn(Parameter $parameter) => $parameter->required);
+
         return $this;
     }
 

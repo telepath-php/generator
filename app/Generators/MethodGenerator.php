@@ -5,6 +5,8 @@ namespace App\Generators;
 use App\Parsers\Parser;
 use App\Telegram\Method;
 use Nette\PhpGenerator\PhpFile;
+use Nette\PhpGenerator\Printer;
+use Nette\PhpGenerator\PsrPrinter;
 
 class MethodGenerator
 {
@@ -18,21 +20,23 @@ class MethodGenerator
 
     public function __construct(string $name, string $namespacePrefix = '')
     {
+        $this->namespacePrefix = $namespacePrefix;
+
         $this->file = new PhpFile();
         $this->file->addComment('This file is auto-generated.');
 
         $split = str($name)->explode('\\');
         $this->namespace = $this->file->addNamespace($split->slice(0, -1)->join('\\'));
-        $this->class = $this->namespace->addClass($split->last());
-
-        $this->namespacePrefix = $namespacePrefix;
+        $this->class = $this->namespace->addClass($split->last())
+            ->setExtends('Tii\\Telepath\\TelegramBase');
     }
 
     public function addMethod(Method $methodDefinition)
     {
         $method = $this->class->addMethod($methodDefinition->name)
-            ->setStatic()
             ->addComment($methodDefinition->description . "\n");
+
+        $method->addBody('return $this->raw(?, func_get_args());', [$methodDefinition->name]);
 
         foreach ($methodDefinition->parameter as $parameterDefinition) {
             foreach (explode('|', $parameterDefinition->phpDocType()) as $type) {
@@ -70,7 +74,7 @@ class MethodGenerator
 
     public function generate(): string
     {
-        return (string) $this->file;
+        return (new PsrPrinter)->printFile($this->file);
     }
 
 }
