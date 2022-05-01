@@ -6,7 +6,7 @@ use App\Parsers\Parser;
 use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 
-class Type implements \ArrayAccess
+class Type
 {
     public readonly string $name;
 
@@ -46,25 +46,5 @@ class Type implements \ArrayAccess
         $this->fields = $this->fields->sortBy(fn(Field $item) => $item->optional);
 
         return $this;
-    }
-
-    public function offsetExists(mixed $offset): bool
-    {
-        return isset($this->fields[$offset]);
-    }
-
-    public function offsetGet(mixed $offset): mixed
-    {
-        return $this->fields[$offset];
-    }
-
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        throw new \Exception('Fields are readonly');
-    }
-
-    public function offsetUnset(mixed $offset): void
-    {
-        throw new \Exception('Fields are readonly');
     }
 }
