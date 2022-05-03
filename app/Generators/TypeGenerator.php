@@ -28,13 +28,12 @@ class TypeGenerator
 
             $phpDocType = $field->phpDocType();
             $phpType = $field->phpType();
-            ray($phpDocType, $phpType);
 
             $property = $class->addProperty($field->name)
                 ->setType($phpType)
                 ->addComment($field->description);
 
-            $makeMethod->addComment('@param ' . $namespace->simplifyType($phpDocType ?? $phpType)
+            $makeMethod->addComment('@param ' . $namespace->simplifyType($phpDocType)
                 . ' $' . $field->name . ' ' . $field->description);
             $parameter = $makeMethod->addParameter($field->name)
                 ->setType($phpType);
