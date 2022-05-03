@@ -26,22 +26,26 @@ class TypeGenerator
 
         foreach ($type->fields as $field) {
 
+            $phpDocType = $field->phpDocType();
+            $phpType = $field->phpType();
+            ray($phpDocType, $phpType);
+
             $property = $class->addProperty($field->name)
-                ->setType($field->phpType)
+                ->setType($phpType)
                 ->addComment($field->description);
 
-            $makeMethod->addComment('@param ' . $namespace->simplifyType($field->phpDocType ?? $field->phpType)
+            $makeMethod->addComment('@param ' . $namespace->simplifyType($phpDocType ?? $phpType)
                 . ' $' . $field->name . ' ' . $field->description);
             $parameter = $makeMethod->addParameter($field->name)
-                ->setType($field->phpType);
+                ->setType($phpType);
 
-            if ($field->optional) {
+            if ($field->optional()) {
                 $property->setNullable()->setInitialized();
                 $parameter->setNullable()->setDefaultValue(null);
             }
 
-            if ($field->phpDocType !== null) {
-                $property->addComment('@var ' . $namespace->simplifyType($field->phpDocType));
+            if ($phpDocType !== $phpType) {
+                $property->addComment('@var ' . $namespace->simplifyType($phpDocType));
             }
 
             $makeMethod->addBody("    ? => \${$field->name},", [$field->name]);

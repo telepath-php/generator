@@ -3,6 +3,7 @@
 namespace App\Parsers;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Symfony\Component\DomCrawler\Crawler;
 
 class Parser
@@ -28,7 +29,7 @@ class Parser
             'Integer'                  => 'int',
             'Float', 'Float number'    => 'float',
             'Boolean', 'True', 'False' => 'bool',
-            default                    => $namespace . $type
+            default                    => Str::finish($namespace, '\\') . $type
         };
 
         return $type;

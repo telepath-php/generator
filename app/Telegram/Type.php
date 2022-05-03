@@ -43,7 +43,7 @@ class Type
             $this->fields[] = new Field($field, $type, $description, $this->namespace);
         }
 
-        $this->fields = $this->fields->sortBy(fn(Field $item) => $item->optional);
+        $this->fields = $this->fields->sortBy(fn(Field $item) => $item->optional());
 
         return $this;
     }
