@@ -89,5 +89,9 @@ return [
         'sendGame'                        => 'Message',
         'setGameScore'                    => 'Message or Boolean',
         'getGameHighScores'               => 'Array of GameHighScore',
+    ],
+
+    'replace' => [
+        'InputFile' => 'Tii\\Telepath\\InputFile',
     ]
 ];

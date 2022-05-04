@@ -24,12 +24,18 @@ class Parser
             return static::phpDocType($parts[0], $namespace) . '|' . static::phpDocType($parts[1], $namespace);
         }
 
+        $replace = config('telegram.replace');
+
+        $fullyQualifiedClassname = isset($replace[$type])
+            ? $replace[$type]
+            : Str::finish($namespace, '\\') . $type;
+
         $type = match ($type) {
             'String'                   => 'string',
             'Integer'                  => 'int',
             'Float', 'Float number'    => 'float',
             'Boolean', 'True', 'False' => 'bool',
-            default                    => Str::finish($namespace, '\\') . $type
+            default                    => $fullyQualifiedClassname
         };
 
         return $type;

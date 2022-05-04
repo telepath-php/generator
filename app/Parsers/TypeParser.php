@@ -32,6 +32,11 @@ class TypeParser extends Parser
             $typeName = $heading->textContent;
             $description = static::parseText($paragraph);
 
+            // Blacklist
+            if (in_array($typeName, ['InputFile'])) {
+                continue;
+            }
+
             $class = $this->namespace . 'Telegram\\' . $typeName;
             $extends = isset($inheritance[$typeName])
                 ? $this->namespace . 'Telegram\\' . $inheritance[$typeName]
