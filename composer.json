@@ -1,26 +1,15 @@
 {
-    "name": "laravel-zero/laravel-zero",
-    "description": "The Laravel Zero Framework.",
-    "keywords": ["framework", "laravel", "laravel zero", "console", "cli"],
-    "homepage": "https://laravel-zero.com",
+    "name": "tii/telepathy",
+    "description": "Helper binary for Telepath Library.",
     "type": "project",
     "license": "MIT",
-    "support": {
-        "issues": "https://github.com/laravel-zero/laravel-zero/issues",
-        "source": "https://github.com/laravel-zero/laravel-zero"
-    },
-    "authors": [
-        {
-            "name": "Nuno Maduro",
-            "email": "enunomaduro@gmail.com"
-        }
-    ],
     "require": {
         "php": "^8.1",
         "ext-dom": "*",
         "guzzlehttp/guzzle": "^7.4",
         "illuminate/http": "^9.0",
         "laravel-zero/framework": "^9.0",
+        "laravel-zero/phar-updater": "^1.2",
         "masterminds/html5": "^2.7",
         "nette/php-generator": "^4.0",
         "nunomaduro/termwind": "^1.3",
