@@ -28,7 +28,8 @@ class MethodGenerator
         $split = str($name)->explode('\\');
         $this->namespace = $this->file->addNamespace($split->slice(0, -1)->join('\\'));
         $this->class = $this->namespace->addClass($split->last())
-            ->setExtends('Tii\\Telepath\\Layer\\Base');
+            ->setExtends('Tii\\Telepath\\Layer\\Base')
+            ->setAbstract();
     }
 
     public function addMethod(Method $methodDefinition)

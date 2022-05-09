@@ -39,7 +39,7 @@ class GenerateMethods extends Command
         $response = Http::get('https://core.telegram.org/bots/api');
         $content = $response->body();
 
-        $path = Str::finish($this->option('path') ?? 'src', '/');
+        $path = Str::finish($this->option('path') ?? 'src', '/') . 'Layer/';
         $class = $this->option('class') ?? 'Tii\\Telepath\\Layer\\Generated';
         $namespace = Str::finish($this->option('namespace') ?? 'Tii\\Telepath\\Telegram', '\\');
 
