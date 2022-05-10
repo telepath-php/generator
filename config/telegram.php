@@ -92,7 +92,7 @@ return [
     ],
 
     'replace' => [
-        'InputFile' => 'Tii\\Telepath\\InputFile',
+        'InputFile' => 'Tii\\Telepath\\Types\\InputFile',
     ],
 
     'ignore_types' => [
