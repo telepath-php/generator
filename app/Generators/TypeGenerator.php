@@ -32,7 +32,8 @@ class TypeGenerator
 
         $this->createProperties($namespace, $class, $type);
 
-        return (string) $file;
+        $printer = new PsrPrinter();
+        return $printer->printFile($file);
     }
 
     protected function createProperties(PhpNamespace $namespace, ClassType $class, Type $type)
@@ -111,7 +112,7 @@ class TypeGenerator
             $namespace->addUse($class);
             $class = $namespace->simplifyType($class);
 
-            $factoryMethod->addBody("\t? => new {$class}(\$data)", [$value]);
+            $factoryMethod->addBody("    ? => new {$class}(\$data)", [$value]);
         }
         $factoryMethod->addBody('};');
     }
