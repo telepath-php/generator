@@ -7,6 +7,7 @@ use App\Telegram\Types\Type;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
+use Nette\PhpGenerator\PsrPrinter;
 
 class TypeGenerator
 {
@@ -24,6 +25,7 @@ class TypeGenerator
 
         if ($type->inheritanceType === InheritanceType::PARENT) {
             $class->setAbstract();
+            $this->createFactoryMethod($namespace, $class, $type);
         } else {
             $this->createMakeMethod($namespace, $class, $type);
         }
@@ -92,6 +94,26 @@ class TypeGenerator
         }
 
         $makeMethod->addBody(']);');
+    }
+
+    protected function createFactoryMethod(PhpNamespace $namespace, ClassType $class, Type $type)
+    {
+        $factoryMethod = $class->addMethod('factory')
+            ->setStatic()
+            ->setReturnType('static');
+
+        $factoryMethod->addParameter('data')
+            ->setType('array');
+
+        $factoryMethod->addBody('return match($data[?]) {', [$type->factoryField]);
+
+        foreach ($type->factoryAssociation as $value => $class) {
+            $namespace->addUse($class);
+            $class = $namespace->simplifyType($class);
+
+            $factoryMethod->addBody("\t? => new {$class}(\$data)", [$value]);
+        }
+        $factoryMethod->addBody('};');
     }
 
 }

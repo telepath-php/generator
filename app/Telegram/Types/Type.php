@@ -13,6 +13,9 @@ class Type
 
     public readonly string $namespace;
 
+    public ?string $factoryField = null;
+    public ?array $factoryAssociation = null;
+
     /** @var Field[] */
     public Collection $fields;
 

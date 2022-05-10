@@ -61,6 +61,8 @@ class TypeParser extends Parser
 
         $this->extractCommonFields($inheritance);
 
+        $this->extractFactoryAssociation($inheritance);
+
         return $this->types;
     }
 
@@ -104,7 +106,7 @@ class TypeParser extends Parser
                 $commonFieldNames = $commonFieldNames->intersect($this->types[$child]->fields->pluck('name'));
             }
 
-            // Add common fields to parent
+            // Add/Clone common fields to parent
             foreach ($this->types[$children->first()]->fields as $childField) {
                 /** @var Field $childField */
                 if (! $commonFieldNames->contains($childField->name)) {
@@ -116,13 +118,35 @@ class TypeParser extends Parser
                 $field->description = preg_replace('/, (must be|always) .+$/u', '', $field->description);
             }
 
-            // Remove common fields from children
+            // Don't create properties for common fields in children
             foreach ($children as $child) {
                 $this->types[$child]->fields->each(function (Field $field) use ($commonFieldNames) {
                     if ($commonFieldNames->contains($field->name) && $field->fixedValue === null) {
                         $field->property = false;
                     }
                 });
+            }
+
+        }
+    }
+
+    protected function extractFactoryAssociation(array $inheritance)
+    {
+        $parents = collect($inheritance)
+            ->mapToGroups(fn($item, $key) => [$item => $key]);
+
+        foreach ($parents as $parent => $children) {
+
+            $fixedKey = $this->types[$children->first()]->fields->whereNotNull('fixedValue')->pluck('name')->first();
+            $this->types[$parent]->factoryField = $fixedKey;
+
+            foreach ($children as $child) {
+
+                $fixedValue = $this->types[$child]->fields->where('name', $fixedKey)->pluck('fixedValue')->first();
+                $class = $this->namespace . 'Telegram\\' . $child;
+
+                $this->types[$parent]->factoryAssociation[$fixedValue] = $class;
+
             }
 
         }
