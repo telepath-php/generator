@@ -93,5 +93,9 @@ return [
 
     'replace' => [
         'InputFile' => 'Tii\\Telepath\\InputFile',
+    ],
+
+    'ignore_types' => [
+        'InputFile',
     ]
 ];
