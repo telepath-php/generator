@@ -138,6 +138,11 @@ class TypeParser extends Parser
         foreach ($parents as $parent => $children) {
 
             $fixedKey = $this->types[$children->first()]->fields->whereNotNull('fixedValue')->pluck('name')->first();
+
+            if ($fixedKey === null) {
+                continue;
+            }
+
             $this->types[$parent]->factoryField = $fixedKey;
 
             foreach ($children as $child) {
