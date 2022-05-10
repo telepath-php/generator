@@ -43,10 +43,10 @@ class GenerateTypes extends Command
         $namespace = Str::finish($this->option('namespace') ?? 'Tii\\Telepath\\', '\\');
         $parentClass = $this->option('parent-class') ?? 'Tii\\Telepath\\Type';
 
-        $parser = resolve(TypeParser::class, ['namespace' => $namespace, 'parentClass' => $parentClass]);
+        $parser = new TypeParser($namespace, $parentClass);
         $types = $parser->parse($content);
 
-        $generator = resolve(TypeGenerator::class);
+        $generator = new TypeGenerator();
         foreach ($types as $type) {
             $file = $generator->generate($type);
             $path = str_replace([$namespace, '\\'], ['', '/'], $type->namespace) . '/';
