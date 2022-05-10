@@ -19,6 +19,8 @@ class TypeGenerator
 
         $namespace = $file->addNamespace($type->namespace);
 
+        $namespace->addUse($type->extends);
+
         $class = $namespace->addClass($type->name)
             ->setExtends($type->extends)
             ->addComment($type->description);
@@ -26,6 +28,10 @@ class TypeGenerator
         if ($type->inheritanceType === InheritanceType::PARENT) {
             $class->setAbstract();
             $this->createFactoryMethod($namespace, $class, $type);
+
+            // TODO: Get namespace prefix from somewhere...?
+            $namespace->addUse('Tii\\Telepath\\Types\\Factory');
+            $class->addImplement('Tii\\Telepath\\Types\\Factory');
         } else {
             $this->createMakeMethod($namespace, $class, $type);
         }
@@ -112,7 +118,7 @@ class TypeGenerator
             $namespace->addUse($class);
             $class = $namespace->simplifyType($class);
 
-            $factoryMethod->addBody("    ? => new {$class}(\$data)", [$value]);
+            $factoryMethod->addBody("    ? => new {$class}(\$data),", [$value]);
         }
         $factoryMethod->addBody('};');
     }
