@@ -2,8 +2,8 @@
 
 namespace App\Parsers;
 
-use App\Telegram\Field;
-use App\Telegram\Type;
+use App\Telegram\Types\Field;
+use App\Telegram\Types\Type;
 use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 

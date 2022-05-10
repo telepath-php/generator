@@ -2,7 +2,7 @@
 
 namespace App\Generators;
 
-use App\Telegram\Type;
+use App\Telegram\Types\Type;
 use Nette\PhpGenerator\PhpFile;
 
 class TypeGenerator

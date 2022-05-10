@@ -2,7 +2,7 @@
 
 namespace App\Parsers;
 
-use App\Telegram\Method;
+use App\Telegram\Methods\Method;
 use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 

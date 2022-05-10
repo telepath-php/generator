@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Telegram;
+namespace App\Telegram\Methods;
 
 use App\Parsers\Parser;
 use Illuminate\Support\Collection;

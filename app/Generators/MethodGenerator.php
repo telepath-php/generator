@@ -3,9 +3,8 @@
 namespace App\Generators;
 
 use App\Parsers\Parser;
-use App\Telegram\Method;
+use App\Telegram\Methods\Method;
 use Nette\PhpGenerator\PhpFile;
-use Nette\PhpGenerator\Printer;
 use Nette\PhpGenerator\PsrPrinter;
 
 class MethodGenerator
@@ -26,7 +25,9 @@ class MethodGenerator
         $this->file->addComment('This file is auto-generated.');
 
         $split = str($name)->explode('\\');
+
         $this->namespace = $this->file->addNamespace($split->slice(0, -1)->join('\\'));
+
         $this->class = $this->namespace->addClass($split->last())
             ->setExtends('Tii\\Telepath\\Layer\\Base')
             ->setAbstract();
