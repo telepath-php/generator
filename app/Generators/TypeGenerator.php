@@ -2,6 +2,7 @@
 
 namespace App\Generators;
 
+use App\Parsers\Types\InheritanceType;
 use App\Telegram\Types\Type;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
@@ -20,6 +21,10 @@ class TypeGenerator
         $class = $namespace->addClass($type->name)
             ->setExtends($type->extends)
             ->addComment($type->description);
+
+        if ($type->inheritanceType === InheritanceType::PARENT) {
+            $class->setAbstract();
+        }
 
         $this->createMakeMethod($namespace, $class, $type);
 
