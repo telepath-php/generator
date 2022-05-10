@@ -10,6 +10,7 @@ class Field
         public string $name,
         public string $type,
         public string $description,
+        public ?string $fixedValue,
         protected string $namespace
     ) {}
 

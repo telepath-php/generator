@@ -41,12 +41,48 @@ class Type
             $field = $dataCells->getNode(0)->textContent;
             $type = $dataCells->getNode(1)->textContent;
             $description = Parser::parseText($dataCells->getNode(2));
+            $fixedValue = $this->parseFixedValue($dataCells->getNode(2), $description);
 
-            $this->fields[] = new Field($field, $type, $description, $this->namespace);
+            $this->fields[] = new Field($field, $type, $description, $fixedValue, $this->namespace);
         }
 
         $this->fields = $this->fields->sortBy(fn(Field $item) => $item->optional());
 
         return $this;
     }
+
+    protected function parseFixedValue(\DOMNode $descriptionNode, string $description): ?string
+    {
+        return $this->tryMustBe($descriptionNode)
+            ?? $this->tryAlways($description);
+    }
+
+    protected function tryMustBe(\DOMNode $descriptionNode): ?string
+    {
+        $expectType = false;
+        /** @var \DOMNode $node */
+        foreach ($descriptionNode->childNodes as $node) {
+            if ($node instanceof \DOMText) {
+                $text = trim($node->wholeText);
+                if (str_ends_with($text, 'must be')) {
+                    $expectType = true;
+                    continue;
+                }
+            } elseif ($expectType) {
+                return $node->textContent;
+            }
+        }
+
+        return null;
+    }
+
+    protected function tryAlways(string $description)
+    {
+        if (preg_match('/always “(.+)”/u', $description, $matches) === 1) {
+            return $matches[1];
+        }
+
+        return null;
+    }
+
 }
