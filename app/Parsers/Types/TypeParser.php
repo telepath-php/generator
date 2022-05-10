@@ -105,16 +105,24 @@ class TypeParser extends Parser
             }
 
             // Add common fields to parent
-            $this->types[$parent]->fields = $this->types[$children->first()]->fields->whereIn('name', $commonFieldNames);
-            $this->types[$parent]->fields->each(
-                function (Field $field) {
-                    $field->description = preg_replace('/, (must be|always) .+$/u', '', $field->description);
+            foreach ($this->types[$children->first()]->fields as $childField) {
+                /** @var Field $childField */
+                if (! $commonFieldNames->contains($childField->name)) {
+                    continue;
                 }
-            );
+
+                $this->types[$parent]->fields[] = $field = clone $childField;
+                $field->fixedValue = null;
+                $field->description = preg_replace('/, (must be|always) .+$/u', '', $field->description);
+            }
 
             // Remove common fields from children
             foreach ($children as $child) {
-                $this->types[$child]->fields = $this->types[$child]->fields->whereNotIn('name', $commonFieldNames);
+                $this->types[$child]->fields->each(function (Field $field) use ($commonFieldNames) {
+                    if ($commonFieldNames->contains($field->name) && $field->fixedValue === null) {
+                        $field->property = false;
+                    }
+                });
             }
 
         }

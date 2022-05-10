@@ -36,12 +36,20 @@ class TypeGenerator
     protected function createProperties(PhpNamespace $namespace, ClassType $class, Type $type)
     {
         foreach ($type->fields as $field) {
+            if (! $field->property) {
+                continue;
+            }
 
             $phpDocType = $field->phpDocType();
             $phpType = $field->phpType();
 
-            $property = $class->addProperty($field->name)->setType($phpType)
+            $property = $class->addProperty($field->name)
+                ->setType($phpType)
                 ->addComment($field->description);
+
+            if ($field->fixedValue !== null) {
+                $property->setValue($field->fixedValue);
+            }
 
             if ($field->optional()) {
                 $property->setNullable()->setInitialized();
@@ -62,6 +70,10 @@ class TypeGenerator
         $makeMethod->addBody('return new static([');
 
         foreach ($type->fields as $field) {
+
+            if (! $field->staticParameter) {
+                continue;
+            }
 
             $phpDocType = $field->phpDocType();
             $phpType = $field->phpType();

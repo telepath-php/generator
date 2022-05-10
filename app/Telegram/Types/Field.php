@@ -6,13 +6,29 @@ use App\Parsers\Parser;
 
 class Field
 {
+    /**
+     * Should this field have its own property on its class
+     * @var bool
+     */
+    public bool $property = true;
+
+    /**
+     * Should this field be included in the static make method
+     * @var bool
+     */
+    public bool $staticParameter = true;
+
     public function __construct(
         public string $name,
         public string $type,
         public string $description,
         public ?string $fixedValue,
         protected string $namespace
-    ) {}
+    ) {
+        if (! is_null($this->fixedValue)) {
+            $this->staticParameter = false;
+        }
+    }
 
     public function optional(): bool
     {
