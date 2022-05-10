@@ -24,9 +24,9 @@ class TypeGenerator
 
         if ($type->inheritanceType === InheritanceType::PARENT) {
             $class->setAbstract();
+        } else {
+            $this->createMakeMethod($namespace, $class, $type);
         }
-
-        $this->createMakeMethod($namespace, $class, $type);
 
         $this->createProperties($namespace, $class, $type);
 
