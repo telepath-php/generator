@@ -3,6 +3,7 @@
 namespace App\Telegram\Types;
 
 use App\Parsers\Parser;
+use App\Parsers\Types\InheritanceType;
 use Illuminate\Support\Collection;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -19,6 +20,7 @@ class Type
         public readonly string $class,
         public readonly ?string $extends = null,
         public readonly ?string $description = null,
+        public readonly InheritanceType $inheritanceType = InheritanceType::DEFAULT,
     ) {
         $this->fields = new Collection();
 

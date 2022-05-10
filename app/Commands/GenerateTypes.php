@@ -3,7 +3,7 @@
 namespace App\Commands;
 
 use App\Generators\TypeGenerator;
-use App\Parsers\TypeParser;
+use App\Parsers\Types\TypeParser;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;

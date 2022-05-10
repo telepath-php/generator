@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Parsers;
+namespace App\Parsers\Types;
 
+use App\Parsers\Parser;
 use App\Telegram\Types\Field;
 use App\Telegram\Types\Type;
 use Illuminate\Support\Collection;
@@ -39,11 +40,17 @@ class TypeParser extends Parser
 
             $class = $this->namespace . 'Telegram\\' . $typeName;
 
-            $extends = isset($inheritance[$typeName])
-                ? $this->namespace . 'Telegram\\' . $inheritance[$typeName]
-                : $this->parentClass;
+            $extends = $this->parentClass;
+            $inheritanceType = InheritanceType::DEFAULT;
 
-            $type = new Type($class, $extends, $description);
+            if (isset($inheritance[$typeName])) {
+                $extends = $this->namespace . 'Telegram\\' . $inheritance[$typeName];
+                $inheritanceType = InheritanceType::CHILD;
+            } elseif (in_array($typeName, $inheritance)) {
+                $inheritanceType = InheritanceType::PARENT;
+            }
+
+            $type = new Type($class, $extends, $description, $inheritanceType);
 
             if (! is_null($table)) {
                 $type->parseTable($table);
