@@ -107,7 +107,7 @@ class TypeGenerator
     {
         $factoryMethod = $class->addMethod('factory')
             ->setStatic()
-            ->setReturnType('static');
+            ->setReturnType('self');
 
         $factoryMethod->addParameter('data')
             ->setType('array');
