@@ -21,7 +21,7 @@ class TypeParser extends Parser
 
     public function parse(string $content)
     {
-        $crawler = resolve(Crawler::class);
+        $crawler = new Crawler();
         $crawler->addHtmlContent($content);
 
         $types = $this->filterTypes($crawler);

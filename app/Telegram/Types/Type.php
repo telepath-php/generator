@@ -46,6 +46,10 @@ class Type
             $description = Parser::parseText($dataCells->getNode(2));
             $fixedValue = $this->parseFixedValue($dataCells->getNode(2), $description);
 
+            if (str_contains($description, 'attach://') && ! str_contains($type, 'InputFile')) {
+                $type .= ' or InputFile';
+            }
+
             $this->fields[] = new Field($field, $type, $description, $fixedValue, $this->namespace);
         }
 
