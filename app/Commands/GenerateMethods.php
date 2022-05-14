@@ -19,7 +19,7 @@ class GenerateMethods extends Command
      */
     protected $signature = 'generate:methods
                             {--path= : Path to the src folder (Default: src/)}
-                            {--class= : Classname to generate (Default: Tii\\Telepath\\Layer\\Generated)}
+                            {--class= : Classname to generate (Default: Tii\\Telepath\\Layers\\Generated)}
                             {--namespace= : Namespace Prefix (Default: Tii\\Telepath\\Telegram\\)}';
 
     /**
@@ -39,8 +39,8 @@ class GenerateMethods extends Command
         $response = Http::get('https://core.telegram.org/bots/api');
         $content = $response->body();
 
-        $path = Str::finish($this->option('path') ?? 'src', '/') . 'Layer/';
-        $class = $this->option('class') ?? 'Tii\\Telepath\\Layer\\Generated';
+        $path = Str::finish($this->option('path') ?? 'src', '/') . 'Layers/';
+        $class = $this->option('class') ?? 'Tii\\Telepath\\Layers\\Generated';
         $namespace = Str::finish($this->option('namespace') ?? 'Tii\\Telepath\\Telegram', '\\');
 
         $parser = new MethodParser($namespace);
