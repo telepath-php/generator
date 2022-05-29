@@ -66,7 +66,7 @@ class TypeGenerator
                 ->setType($phpType)
                 ->addComment($field->description);
 
-            if ($field->fixedValue !== null) {
+            if ($field->fixedValue !== null && ! $field->optional()) {
                 $property->setValue($field->fixedValue);
             }
 

@@ -44,7 +44,8 @@ class Type
             $field = $dataCells->getNode(0)->textContent;
             $type = $dataCells->getNode(1)->textContent;
             $description = Parser::parseText($dataCells->getNode(2));
-            $fixedValue = $this->parseFixedValue($dataCells->getNode(2), $description);
+            $fixedValue = $this->fixedType($type)
+                ?? $this->parseFixedValue($dataCells->getNode(2), $description);
 
             if (str_contains($description, 'attach://') && ! str_contains($type, 'InputFile')) {
                 $type .= ' or InputFile';
@@ -90,6 +91,14 @@ class Type
         }
 
         return null;
+    }
+
+    protected function fixedType(string $type)
+    {
+        return match ($type) {
+            'True'  => true,
+            default => null,
+        };
     }
 
 }

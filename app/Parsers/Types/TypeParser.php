@@ -44,10 +44,14 @@ class TypeParser extends Parser
             $inheritanceType = InheritanceType::DEFAULT;
 
             if (isset($inheritance[$typeName])) {
+
                 $extends = $this->namespace . 'Telegram\\' . $inheritance[$typeName];
                 $inheritanceType = InheritanceType::CHILD;
+
             } elseif (in_array($typeName, $inheritance)) {
+
                 $inheritanceType = InheritanceType::PARENT;
+
             }
 
             $type = new Type($class, $extends, $description, $inheritanceType);

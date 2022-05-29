@@ -7,7 +7,7 @@ use App\Parsers\Parser;
 class Field
 {
     /**
-     * Should this field have its own property on its class
+     * Should this field has its own property on its class
      * @var bool
      */
     public bool $property = true;
@@ -22,10 +22,10 @@ class Field
         public string $name,
         public string $type,
         public string $description,
-        public ?string $fixedValue,
+        public mixed $fixedValue,
         protected string $namespace
     ) {
-        if (! is_null($this->fixedValue)) {
+        if (! is_null($this->fixedValue) && ! $this->optional()) {
             $this->staticParameter = false;
         }
     }
