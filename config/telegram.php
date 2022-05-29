@@ -97,5 +97,12 @@ return [
 
     'ignore_types' => [
         'InputFile',
-    ]
+    ],
+
+    'traits' => [
+        'Update' => [
+            'Tii\\Telepath\\Types\\Extensions\\UpdateExtension'
+        ],
+    ],
+
 ];

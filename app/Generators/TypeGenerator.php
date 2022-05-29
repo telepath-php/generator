@@ -25,6 +25,14 @@ class TypeGenerator
             ->setExtends($type->extends)
             ->addComment($type->description);
 
+        $traits = config('telegram.traits');
+        if (isset($traits[$type->name])) {
+            foreach ($traits[$type->name] as $trait) {
+                $namespace->addUse($trait);
+                $class->addTrait($trait);
+            }
+        }
+
         if ($type->inheritanceType === InheritanceType::PARENT) {
             $class->setAbstract();
 
