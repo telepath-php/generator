@@ -175,8 +175,8 @@ class TypeParser extends Parser
         $items = (new Crawler($list))->filter('li');
         $invalidItems = $items->reduce(function (Crawler $node) {
             $link = $node->filter('a');
-            return $link->count() !== 1
-                || substr($link->attr('href'), 0, 1) !== '#';
+
+            return $link->count() !== 1 || $node->text() !== $link->text() || substr($link->attr('href'), 0, 1) !== '#';
         });
 
         return $invalidItems->count() === 0;
