@@ -1,5 +1,5 @@
 {
-    "name": "tii/telepathy",
+    "name": "telepath/telepathy",
     "description": "Helper binary for Telepath Library.",
     "type": "project",
     "license": "MIT",
