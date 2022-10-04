@@ -19,8 +19,8 @@ class GenerateTypes extends Command
      */
     protected $signature = 'generate:types
                             {--path= : Path to the src folder (Default: src/)}
-                            {--namespace= : Namespace Prefix (Default: Tii\\Telepath\\)}
-                            {--parent-class= : Parent Class for Type classes (Default: Tii\\Telepath\\Types\\Type)}';
+                            {--namespace= : Namespace Prefix (Default: Telepath\\)}
+                            {--parent-class= : Parent Class for Type classes (Default: Telepath\\Types\\Type)}';
 
     /**
      * The description of the command.
@@ -40,8 +40,8 @@ class GenerateTypes extends Command
         $content = $response->body();
 
         $srcPath = Str::finish($this->option('path') ?? 'src', '/');
-        $namespace = Str::finish($this->option('namespace') ?? 'Tii\\Telepath\\', '\\');
-        $parentClass = $this->option('parent-class') ?? 'Tii\\Telepath\\Types\\Type';
+        $namespace = Str::finish($this->option('namespace') ?? 'Telepath\\', '\\');
+        $parentClass = $this->option('parent-class') ?? 'Telepath\\Types\\Type';
 
         $parser = new TypeParser($namespace, $parentClass);
         $types = $parser->parse($content);

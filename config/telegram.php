@@ -92,7 +92,7 @@ return [
     ],
 
     'replace' => [
-        'InputFile' => 'Tii\\Telepath\\Types\\InputFile',
+        'InputFile' => 'Telepath\\Types\\InputFile',
     ],
 
     'ignore_types' => [
@@ -101,7 +101,7 @@ return [
 
     'traits' => [
         'Update' => [
-            'Tii\\Telepath\\Types\\Extensions\\UpdateExtension'
+            'Telepath\\Types\\Extensions\\UpdateExtension'
         ],
     ],
 

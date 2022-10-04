@@ -39,8 +39,8 @@ class TypeGenerator
             if ($type->factoryField !== null) {
                 $this->createFactoryMethod($namespace, $class, $type);
                 // TODO: Get namespace prefix from somewhere...?
-                $namespace->addUse('Tii\\Telepath\\Types\\Factory');
-                $class->addImplement('Tii\\Telepath\\Types\\Factory');
+                $namespace->addUse('Telepath\\Types\\Factory');
+                $class->addImplement('Telepath\\Types\\Factory');
             }
         } else {
             $this->createMakeMethod($namespace, $class, $type);

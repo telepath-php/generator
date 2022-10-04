@@ -19,8 +19,8 @@ class GenerateMethods extends Command
      */
     protected $signature = 'generate:methods
                             {--path= : Path to the src folder (Default: src/)}
-                            {--class= : Classname to generate (Default: Tii\\Telepath\\Layers\\Generated)}
-                            {--namespace= : Namespace Prefix (Default: Tii\\Telepath\\Telegram\\)}';
+                            {--class= : Classname to generate (Default: Telepath\\Layers\\Generated)}
+                            {--namespace= : Namespace Prefix (Default: Telepath\\Telegram\\)}';
 
     /**
      * The description of the command.
@@ -40,8 +40,8 @@ class GenerateMethods extends Command
         $content = $response->body();
 
         $path = Str::finish($this->option('path') ?? 'src', '/') . 'Layers/';
-        $class = $this->option('class') ?? 'Tii\\Telepath\\Layers\\Generated';
-        $namespace = Str::finish($this->option('namespace') ?? 'Tii\\Telepath\\Telegram', '\\');
+        $class = $this->option('class') ?? 'Telepath\\Layers\\Generated';
+        $namespace = Str::finish($this->option('namespace') ?? 'Telepath\\Telegram', '\\');
 
         $parser = new MethodParser($namespace);
         $methods = $parser->parse($content);
