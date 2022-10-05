@@ -72,6 +72,10 @@ class MethodGenerator
                 );
             }
         }
+
+        $method->addComment('@throws ' .
+            $this->namespace->simplifyType('Telepath\\Exceptions\\TelegramException')
+        );
     }
 
     public function generate(): string
