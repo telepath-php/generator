@@ -1,6 +1,6 @@
 {
-    "name": "telepath/telepathy",
-    "description": "Helper binary for Telepath Library.",
+    "name": "telepath/tellaptepab",
+    "description": "Code generation utility for Telepath.",
     "type": "project",
     "license": "MIT",
     "require": {
@@ -40,7 +40,6 @@
             "pestphp/pest-plugin": true
         }
     },
-    "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": ["telepathy"]
+    "bin": ["tellaptepab"]
 }
