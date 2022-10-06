@@ -1,5 +1,8 @@
 <?php
 
+use App\Commands\GenerateMethods;
+use App\Commands\GenerateTypes;
+
 return [
 
     /*
@@ -56,12 +59,10 @@ return [
 
     'hidden' => [
         NunoMaduro\LaravelConsoleSummary\SummaryCommand::class,
-        Symfony\Component\Console\Command\DumpCompletionCommand::class,
         Symfony\Component\Console\Command\HelpCommand::class,
-        Illuminate\Console\Scheduling\ScheduleRunCommand::class,
-        Illuminate\Console\Scheduling\ScheduleListCommand::class,
-        Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
-        LaravelZero\Framework\Commands\StubPublishCommand::class,
+
+        GenerateMethods::class,
+        GenerateTypes::class,
     ],
 
     /*
@@ -76,7 +77,11 @@ return [
     */
 
     'remove' => [
-        // ..
+        Symfony\Component\Console\Command\DumpCompletionCommand::class,
+        Illuminate\Console\Scheduling\ScheduleRunCommand::class,
+        Illuminate\Console\Scheduling\ScheduleListCommand::class,
+        Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
+        LaravelZero\Framework\Commands\StubPublishCommand::class,
     ],
 
 ];
