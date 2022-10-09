@@ -103,6 +103,9 @@ return [
         'Update' => [
             'Telepath\\Types\\Extensions\\UpdateExtension'
         ],
+        'Message' => [
+            'Telepath\Types\Extensions\MessageExtension'
+        ],
     ],
 
 ];
