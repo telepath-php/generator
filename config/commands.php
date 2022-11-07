@@ -60,9 +60,6 @@ return [
     'hidden' => [
         NunoMaduro\LaravelConsoleSummary\SummaryCommand::class,
         Symfony\Component\Console\Command\HelpCommand::class,
-
-        GenerateMethods::class,
-        GenerateTypes::class,
     ],
 
     /*
