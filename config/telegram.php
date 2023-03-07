@@ -100,11 +100,14 @@ return [
     ],
 
     'traits' => [
-        'Update' => [
-            'Telepath\\Types\\Extensions\\UpdateExtension'
+        'Update'  => [
+            'Telepath\\Types\\Extensions\\UpdateExtension',
         ],
         'Message' => [
-            'Telepath\Types\Extensions\MessageExtension'
+            'Telepath\Types\Extensions\MessageExtension',
+        ],
+        'Dice'    => [
+            'Telepath\Types\Extensions\DiceExtension',
         ],
     ],
 
