@@ -100,14 +100,17 @@ return [
     ],
 
     'traits' => [
-        'Update'  => [
-            'Telepath\\Types\\Extensions\\UpdateExtension',
+        'Dice'    => [
+            'Telepath\Types\Extensions\DiceExtension',
+        ],
+        'File'    => [
+            '\Telepath\Types\Extensions\FileExtension',
         ],
         'Message' => [
             'Telepath\Types\Extensions\MessageExtension',
         ],
-        'Dice'    => [
-            'Telepath\Types\Extensions\DiceExtension',
+        'Update'  => [
+            'Telepath\\Types\\Extensions\\UpdateExtension',
         ],
     ],
 
