@@ -122,13 +122,18 @@ class TypeGenerator
         $factoryMethod->addParameter('data')
             ->setType('array');
 
+        $namespace->addUse('Telepath\Bot');
+        $factoryMethod->addParameter('bot')
+            ->setDefaultValue(null)
+            ->setType('Telepath\Bot');
+
         $factoryMethod->addBody('return match($data[?]) {', [$type->factoryField]);
 
         foreach ($type->factoryAssociation as $value => $class) {
             $namespace->addUse($class);
             $class = $namespace->simplifyType($class);
 
-            $factoryMethod->addBody("    ? => new {$class}(\$data),", [$value]);
+            $factoryMethod->addBody("    ? => new {$class}(\$data, \$bot),", [$value]);
         }
         $factoryMethod->addBody('};');
     }
