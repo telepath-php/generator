@@ -1,5 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Generate Types" type="PhpLocalRunConfigurationType" factoryName="PHP Console" path="$PROJECT_DIR$/tellaptepab" scriptParameters="generate:types --path=../telepath/src/">
-    <method v="2" />
-  </configuration>
-</component>
