@@ -22,19 +22,19 @@ class ParseDocumentation implements ShouldQueue
     public function handle(): void
     {
         $page = Cache::remember('documentation', now()->addHours(24), function () {
-            return Http::get(config('parser.url'))->body();
+            return Http::get(config('tellaptepab.url'))->body();
         });
 
         $document = new Document();
         $crawler = new Crawler($page);
 
-        foreach (config('parser.parser') as $parser) {
+        foreach (config('tellaptepab.parser') as $parser) {
 
             (new $parser($document, $crawler))->parse();
 
         }
 
-        ray($document);
+        dispatch(new GenerateCode($document));
     }
 
 }

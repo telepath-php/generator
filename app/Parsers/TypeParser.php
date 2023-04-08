@@ -12,23 +12,23 @@ class TypeParser extends Parser
     {
         foreach ($this->sections() as $section) {
 
-            $heading = $section->filter('h4');
-            $paragraph = $section->filter('p');
-            $fieldTable = $section->filter('table');
-            $childClasses = $section->filter('ul');
+            $name = $this->name($section);
 
-            $isType = $this->tableHasFields($fieldTable)
-                || $this->listsChildClasses($childClasses)
-                || $this->descriptionContainsObject($paragraph);
+            if (in_array($name, array_keys(config('tellaptepab.replace_types')))) {
+                continue;
+            }
+
+            $description = $this->description($section);
+            $fields = $this->fields($section);
+            $children = $this->children($section);
+
+            $isType = $fields
+                || $children
+                || $this->descriptionContainsObject($description);
 
             if (! $isType) {
                 continue;
             }
-
-            $name = $heading->text();
-            $description = $this->normalizeText($paragraph, true);
-            $fields = $this->parseFieldTable($fieldTable);
-//            $childClasses = $this->parseChildClasses($childClasses);
 
             $type = new Type(
                 $name,
@@ -36,53 +36,65 @@ class TypeParser extends Parser
             );
             $type->importFields($fields);
 
-            $this->document->types->add($type);
+            // Set children by name
+            foreach ($children as $child) {
+                $type->children->put($child, $child);
+            }
+
+            // Set parent and replace the childs name with a reference
+            $type->parent = $this->document->findParentType($name);
+            $type->parent?->children->put($name, $type);
+
+            $this->document->types->put($name, $type);
 
         }
+
+        $this->document->pullUpCommonFields();
     }
 
-    protected function parseFieldTable(Crawler $table): array
+    protected function name(Crawler $section): string
     {
-        $fields = [];
+        return $section->filter('h4')->text();
+    }
 
-        $table->filter('tbody > tr')->each(function (Crawler $row) use (&$fields) {
+    protected function description(Crawler $section): string
+    {
+        return $this->normalizeText($section->filter('p'));
+    }
+
+    /**
+     * @return array<int, array{field: string, type: string, description: string}>
+     */
+    protected function fields(Crawler $section): array
+    {
+        $firstHeading = $section->filter('table th')->first();
+
+        if ($firstHeading->count() === 0 || $firstHeading->text() !== 'Field') {
+            return [];
+        }
+
+        return $section->filter('table tbody tr')->each(function (Crawler $row) {
 
             $items = $row->filter('td');
 
-            $fields[] = [
+            return [
                 'field'       => $items->eq(0)->text(),
                 'type'        => $items->eq(1)->text(),
                 'description' => $this->normalizeText($items->eq(2), true),
             ];
 
         });
-
-        return $fields;
     }
 
-    protected function parseChildClasses(Crawler $list): array
+    /**
+     * @return string[]
+     */
+    protected function children(Crawler $section): array
     {
-        return $list->filter('li')
-            ->each(fn($item) => $item->text());
-    }
-
-    protected function tableHasFields(Crawler $table): bool
-    {
-        $firstHeading = $table->filter('thead th:nth-child(1)');
-
-        if ($firstHeading->count() === 0) {
-            return false;
-        }
-
-        return $firstHeading->text() === 'Field';
-    }
-
-    protected function listsChildClasses(Crawler $childClasses): bool
-    {
-        $items = $childClasses->filter('li');
+        $items = $section->filter('ul li');
 
         if ($items->count() === 0) {
-            return false;
+            return [];
         }
 
         $invalidItems = $items->reduce(function (Crawler $node) {
@@ -93,12 +105,16 @@ class TypeParser extends Parser
                 || substr($link->attr('href'), 0, 1) !== '#'; // The link should not lead to external websites
         });
 
-        return $invalidItems->count() === 0;
+        if ($invalidItems->count() > 0) {
+            return [];
+        }
+
+        return $items->each(fn(Crawler $item) => $item->text());
     }
 
-    protected function descriptionContainsObject(Crawler $paragraph): bool
+    protected function descriptionContainsObject(string $text): bool
     {
-        return str($paragraph->text())->explode('.')
+        return str($text)->explode('.')
             ->strOfFirst()->startsWith([
                 'This object',
                 'Describes',

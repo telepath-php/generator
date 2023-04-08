@@ -33,7 +33,7 @@ class MethodParser extends Parser
             );
             $method->importParameters($parameters);
 
-            $this->document->methods->add($method);
+            $this->document->methods->put($name, $method);
 
         }
     }
