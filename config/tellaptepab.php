@@ -31,4 +31,21 @@ return [
 
     ],
 
+    'extensions' => [
+
+        'Dice'    => [
+            'Telepath\Types\Extensions\DiceExtension',
+        ],
+        'File'    => [
+            '\Telepath\Types\Extensions\FileExtension',
+        ],
+        'Message' => [
+            'Telepath\Types\Extensions\MessageExtension',
+        ],
+        'Update'  => [
+            'Telepath\\Types\\Extensions\\UpdateExtension',
+        ],
+
+    ],
+
 ];

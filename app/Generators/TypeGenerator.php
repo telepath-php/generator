@@ -39,7 +39,11 @@ class TypeGenerator extends Generator
             ->setExtends($type->parentClassName())
             ->addComment($type->description);
 
-        // TODO: Traits
+        $extensions = config('tellaptepab.extensions');
+        foreach ($extensions[$type->name] ?? [] as $trait) {
+            $namespace->addUse($trait);
+            $class->addTrait($trait);
+        }
 
         if ($type->children->count() > 0) {
             $class->setAbstract();
