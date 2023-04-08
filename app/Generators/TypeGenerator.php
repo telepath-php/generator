@@ -45,7 +45,7 @@ class TypeGenerator extends Generator
             $class->addTrait($trait);
         }
 
-        if ($type->children->count() > 0) {
+        if ($type->isParent()) {
             $class->setAbstract();
 
             $factory = config('tellaptepab.factory_class');
