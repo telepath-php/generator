@@ -7,10 +7,10 @@ use Illuminate\Support\Collection;
 class Type
 {
 
-    public readonly FieldList $fields;
+    public FieldList $fields;
 
     /** @var Collection<int, Type> */
-    public readonly Collection $children;
+    public Collection $children;
 
     public ?Type $parent = null;
 
@@ -33,6 +33,8 @@ class Type
                 )
             );
         }
+
+        $this->fields = $this->fields->sortBy(fn(Field $field) => $field->optional());
     }
 
     public function isParent(): bool
