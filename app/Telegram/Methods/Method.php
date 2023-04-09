@@ -2,6 +2,8 @@
 
 namespace App\Telegram\Methods;
 
+use App\Support\ReturnTypeDiscovery;
+
 class Method
 {
 
@@ -26,6 +28,19 @@ class Method
                 )
             );
         }
+    }
+
+    public function return(): ?string
+    {
+        return match (config('tellaptepab.return_type_discovery_driver', 'local')) {
+
+            'local'  => (new ReturnTypeDiscovery\LocalReturnTypeDiscovery())->discover($this),
+
+            'openai' => (new ReturnTypeDiscovery\OpenAiReturnTypeDiscovery())->discover($this),
+
+            default  => throw new \UnexpectedValueException('Invalid return type discovery driver'),
+
+        };
     }
 
 

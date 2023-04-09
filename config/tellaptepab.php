@@ -11,6 +11,28 @@ return [
 
     ],
 
+    'generators' => [
+
+        \App\Generators\TypeGenerator::class,
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Validators
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the validators that will be used to validate the
+    | generated types and methods before generating code.
+    |
+    */
+
+    'validators' => [
+
+        App\Validators\ReturnTypeValidator::class,
+
+    ],
+
     'namespace' => 'Telepath\\Telegram',
 
     'parent_class' => 'Telepath\\Types\\Type',
@@ -18,12 +40,6 @@ return [
     'factory_class' => 'Telepath\\Types\\Factory',
 
     'bot_class' => 'Telepath\\Bot',
-
-    'generators' => [
-
-        \App\Generators\TypeGenerator::class,
-
-    ],
 
     'replace_types' => [
 
@@ -34,18 +50,32 @@ return [
     'extensions' => [
 
         'Dice'    => [
-            'Telepath\Types\Extensions\DiceExtension',
+            'Telepath\\Types\\Extensions\\DiceExtension',
         ],
         'File'    => [
-            '\Telepath\Types\Extensions\FileExtension',
+            'Telepath\\Types\\Extensions\\FileExtension',
         ],
         'Message' => [
-            'Telepath\Types\Extensions\MessageExtension',
+            'Telepath\\Types\\Extensions\\MessageExtension',
         ],
         'Update'  => [
             'Telepath\\Types\\Extensions\\UpdateExtension',
         ],
 
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Return Type Discovery Driver
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the return type discovery driver that will be used
+    | to determine the return type of the methods.
+    |
+    | Possible values: local, openai
+    |
+    */
+
+    'return_type_discovery_driver' => env('RETURN_TYPE_DISCOVERY_DRIVER', 'local'),
 
 ];

@@ -140,7 +140,6 @@ class TypeGenerator extends Generator
             ->setType($botClass);
 
         $method->addBody('return match($data[?]) {', [$type->childIdentifier()]);
-        ray(iterator_to_array($type->childMap()))->label($type->name);
         foreach ($type->childMap() as $value => $child) {
             $namespace->addUse($child->className());
             $class = $namespace->simplifyType($child->className());

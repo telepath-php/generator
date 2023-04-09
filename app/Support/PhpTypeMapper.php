@@ -7,7 +7,7 @@ class PhpTypeMapper
 
     public static function docType(string $type): string
     {
-        if (str_starts_with($type, 'Array of')) {
+        if (str_starts_with(strtolower($type), 'array of')) {
             $arrayType = static::docType(substr($type, 9));
 
             return str_contains($arrayType, '|')
@@ -25,11 +25,11 @@ class PhpTypeMapper
             ? $classMap[$type]
             : config('tellaptepab.namespace') . '\\' . $type;
 
-        return match ($type) {
-            'String'                   => 'string',
-            'Integer'                  => 'int',
-            'Float', 'Float number'    => 'float',
-            'Boolean', 'True', 'False' => 'bool',
+        return match (strtolower($type)) {
+            'string'                   => 'string',
+            'integer', 'int'           => 'int',
+            'float', 'float number'    => 'float',
+            'boolean', 'true', 'false' => 'bool',
             default                    => $fullyQualifiedClassname,
         };
 

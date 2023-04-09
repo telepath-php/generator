@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use OpenAI\Client;
+use OpenAI\Factory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(Client::class, function() {
+            return \OpenAI::client(config('services.openai.api_key', ''));
+        });
     }
 
     /**

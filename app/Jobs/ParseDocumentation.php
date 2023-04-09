@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Support\PhpTypeMapper;
 use App\Telegram\Document;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,7 +35,35 @@ class ParseDocumentation implements ShouldQueue
 
         }
 
-        dispatch(new GenerateCode($document));
+//        $this->debugReturnTypes($document);
+
+        dispatch(new ValidateDocument($document));
+    }
+
+    protected function debugReturnTypes(Document $document): void
+    {
+        ray()->newScreen();
+        $missing = 0;
+        foreach ($document->methods as $method) {
+            $return = $method->return();
+
+            ray()->table([
+                'name'        => $method->name,
+                'description' => $method->description,
+                'return'      => $return,
+                'docType'     => $return ? PhpTypeMapper::docType($return) : null,
+                'phpType'     => $return ? PhpTypeMapper::phpType($return) : null,
+            ])->green()
+                ->if(is_null($return))->red();
+
+            if (is_null($return)) {
+                $missing++;
+            }
+        }
+
+        ray("Unrecognized return types: {$missing}");
+
+        ray(Cache::get('openai_tokens', 0))->label('OpenAI Tokens');
     }
 
 }
