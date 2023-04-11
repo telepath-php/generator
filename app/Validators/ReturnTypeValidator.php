@@ -42,13 +42,11 @@ class ReturnTypeValidator extends Validator
 
         });
 
-        $messages = $invalidTypes
-            ->map(fn($type, $name) => "  - Method $name has invalid return type: $type")
-            ->join("\n");
-
-        if (strlen($messages) > 0) {
-            $messages = "Errors:\n" . $messages;
-        }
+        $messages = $invalidTypes->count() > 0
+            ? str($invalidTypes
+                ->map(fn($type, $name) => "  - Method $name has invalid return type: $type")
+                ->join("\n"))->prepend("Errors:\n")
+            : 'There were no errors.';
 
         $this->report(
             $messages,
