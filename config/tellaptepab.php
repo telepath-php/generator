@@ -4,16 +4,39 @@ return [
 
     'url' => 'https://core.telegram.org/bots/api',
 
+    /*
+    |--------------------------------------------------------------------------
+    | Parsers
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the parsers that will be used to parse the
+    | documentation for Telegram Bot API.
+    |
+    */
+
     'parser' => [
 
         \App\Parsers\TypeParser::class,
+
         \App\Parsers\MethodParser::class,
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Generators
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the generators that will be used to generate the
+    | code for Telepath.
+    |
+    */
+
     'generators' => [
 
         \App\Generators\TypeGenerator::class,
+
+        \App\Generators\MethodGenerator::class,
 
     ],
 
@@ -33,34 +56,73 @@ return [
 
     ],
 
-    'namespace' => 'Telepath\\Telegram',
+    'type' => [
 
-    'parent_class' => 'Telepath\\Types\\Type',
+        'namespace' => 'Telepath\\Telegram',
 
-    'factory_class' => 'Telepath\\Types\\Factory',
+        'parent_class' => 'Telepath\\Types\\Type',
 
-    'bot_class' => 'Telepath\\Bot',
+        'factory_class' => 'Telepath\\Types\\Factory',
 
-    'replace_types' => [
+        'bot_class' => 'Telepath\\Bot',
 
-        'InputFile' => 'Telepath\\Types\\InputFile',
+        /*
+        |--------------------------------------------------------------------------
+        | Replacement Types
+        |--------------------------------------------------------------------------
+        |
+        | Sometimes its necessary to replace a type with another type. This option
+        | allows to do so. The key is the type to be ignored from the Telegram
+        | docs and instead the value will be referenced.
+        |
+        */
+
+        'replace_types' => [
+
+            'InputFile' => 'Telepath\\Types\\InputFile',
+
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Extensions
+        |--------------------------------------------------------------------------
+        |
+        | Sometimes its necessary to add method to a generated Type to improve
+        | the usability. This option controls the traits that will be added
+        | to the corresponding types.
+        |
+        */
+
+        'extensions' => [
+
+            'Dice' => [
+                'Telepath\\Types\\Extensions\\DiceExtension',
+            ],
+
+            'File' => [
+                'Telepath\\Types\\Extensions\\FileExtension',
+            ],
+
+            'Message' => [
+                'Telepath\\Types\\Extensions\\MessageExtension',
+            ],
+
+            'Update' => [
+                'Telepath\\Types\\Extensions\\UpdateExtension',
+            ],
+
+        ],
 
     ],
 
-    'extensions' => [
+    'method' => [
 
-        'Dice'    => [
-            'Telepath\\Types\\Extensions\\DiceExtension',
-        ],
-        'File'    => [
-            'Telepath\\Types\\Extensions\\FileExtension',
-        ],
-        'Message' => [
-            'Telepath\\Types\\Extensions\\MessageExtension',
-        ],
-        'Update'  => [
-            'Telepath\\Types\\Extensions\\UpdateExtension',
-        ],
+        'classname' => 'Telepath\\Layers\\Generated',
+
+        'parent_class' => 'Telepath\\Layers\\Base',
+
+        'exception' => 'Telepath\\Exceptions\\TelegramException',
 
     ],
 

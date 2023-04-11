@@ -20,10 +20,10 @@ class PhpTypeMapper
             return static::docType($parts[0]) . '|' . static::docType($parts[1]);
         }
 
-        $classMap = config('tellaptepab.replace_types');
+        $classMap = config('tellaptepab.type.replace_types');
         $fullyQualifiedClassname = isset($classMap[$type])
             ? $classMap[$type]
-            : config('tellaptepab.namespace') . '\\' . $type;
+            : config('tellaptepab.type.namespace') . '\\' . $type;
 
         return match (strtolower($type)) {
             'string'                   => 'string',

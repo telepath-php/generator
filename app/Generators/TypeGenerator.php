@@ -17,12 +17,12 @@ class TypeGenerator extends Generator
 
     public function generate(Document $document)
     {
-        File::ensureDirectoryExists(base_path('build/Types'));
-
         foreach ($document->types as $type) {
+            $filename = psr_build_path($type->className());
             $content = $this->generateType($type);
 
-            file_put_contents(base_path("build/Types/{$type->name}.php"), $content);
+            File::ensureDirectoryExists(dirname($filename));
+            file_put_contents($filename, $content);
         }
     }
 
@@ -39,7 +39,7 @@ class TypeGenerator extends Generator
             ->setExtends($type->parentClassName())
             ->addComment($type->description);
 
-        $extensions = config('tellaptepab.extensions');
+        $extensions = config('tellaptepab.type.extensions');
         foreach ($extensions[$type->name] ?? [] as $trait) {
             $namespace->addUse($trait);
             $class->addTrait($trait);
@@ -48,7 +48,7 @@ class TypeGenerator extends Generator
         if ($type->isParent()) {
             $class->setAbstract();
 
-            $factory = config('tellaptepab.factory_class');
+            $factory = config('tellaptepab.type.factory_class');
             $namespace->addUse($factory);
             $class->addImplement($factory);
 
@@ -133,7 +133,7 @@ class TypeGenerator extends Generator
         $method->addParameter('data')
             ->setType('array');
 
-        $botClass = config('tellaptepab.bot_class');
+        $botClass = config('tellaptepab.type.bot_class');
         $namespace->addUse($botClass);
         $method->addParameter('bot')
             ->setDefaultValue(null)

@@ -19,8 +19,6 @@ class ReturnTypeValidator extends Validator
         $availableTypes = $document->types->mapWithKeys(fn(Type $type) => [$type->name => $type]);
         $invalidTypes = new Collection();
 
-        ray($availableTypes->toArray());
-
         $returnTypes->each(function ($returnType, $name) use ($availableTypes, $invalidTypes) {
 
             $checkTypes = str($returnType)

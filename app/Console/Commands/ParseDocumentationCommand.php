@@ -14,6 +14,7 @@ class ParseDocumentationCommand extends Command
 
     public function handle(): void
     {
+        ray()->newScreen();
         dispatch(new ParseDocumentation());
     }
 
