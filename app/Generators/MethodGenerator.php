@@ -5,8 +5,10 @@ namespace App\Generators;
 use App\Support\PhpTypeMapper;
 use App\Telegram\Document;
 use App\Telegram\Methods\Method;
+use App\Telegram\Methods\Parameter;
 use Illuminate\Support\Facades\File;
-use Nette\PhpGenerator\ClassType;
+use Nette\PhpGenerator\ClassType as PhpClass;
+use Nette\PhpGenerator\Method as PhpMethod;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PsrPrinter;
@@ -40,7 +42,7 @@ class MethodGenerator extends Generator
         file_put_contents($filename, $content);
     }
 
-    protected function addMethod(PhpNamespace $namespace, ClassType $class, Method $method)
+    protected function addMethod(PhpNamespace $namespace, PhpClass $class, Method $method)
     {
         // Definition
         $classMethod = $class->addMethod($method->name)
@@ -71,7 +73,7 @@ class MethodGenerator extends Generator
 
     }
 
-    protected function addParameter(PhpNamespace $namespace, \Nette\PhpGenerator\Method $classMethod, \App\Telegram\Methods\Parameter $parameter): void
+    protected function addParameter(PhpNamespace $namespace, PhpMethod $classMethod, Parameter $parameter): void
     {
         $docType = PhpTypeMapper::docType($parameter->type);
         $phpType = PhpTypeMapper::phpType($parameter->type);
