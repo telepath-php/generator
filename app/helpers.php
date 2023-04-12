@@ -3,7 +3,7 @@
 if (! function_exists('psr_build_path')) {
     function psr_build_path(string $className)
     {
-        $buildPath = base_path('build/');
+        $buildPath = Str::finish(config('tellaptepab.build_path'), '/');
 
         return str($className)
             ->replace('Telepath\\', '')
