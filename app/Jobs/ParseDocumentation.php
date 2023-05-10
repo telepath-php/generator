@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Support\PhpTypeMapper;
 use App\Telegram\Document;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -50,9 +49,9 @@ class ParseDocumentation implements ShouldQueue
             ray()->table([
                 'name'        => $method->name,
                 'description' => $method->description,
-                'return'      => $return,
-                'docType'     => $return ? PhpTypeMapper::docType($return) : null,
-                'phpType'     => $return ? PhpTypeMapper::phpType($return) : null,
+                'return'      => $return->telegramType,
+                'docType'     => $return->docType,
+                'phpType'     => $return->phpType,
             ])->green()
                 ->if(is_null($return))->red();
 

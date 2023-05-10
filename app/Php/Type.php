@@ -1,16 +1,27 @@
 <?php
 
-namespace App\Support;
+namespace App\Php;
 
 use Nette\PhpGenerator\PhpNamespace;
 
-class PhpTypeMapper
+readonly class Type
 {
 
-    public static function docType(string $type): string
+    public string $phpType;
+
+    public string $docType;
+
+    public function __construct(
+        public string $telegramType,
+    ) {
+        $this->docType = $this->buildDocType($telegramType);
+        $this->phpType = $this->buildPhpType();
+    }
+
+    protected function buildDocType(string $type)
     {
         if (str_starts_with(strtolower($type), 'array of')) {
-            $arrayType = static::docType(substr($type, 9));
+            $arrayType = $this->buildDocType(substr($type, 9));
 
             return str_contains($arrayType, '|')
                 ? str_replace('|', '[]|', $arrayType) . '[]'
@@ -19,7 +30,7 @@ class PhpTypeMapper
 
         $parts = str($type)->split('/(?: or |, | and )/', 2);
         if (count($parts) > 1) {
-            return static::docType($parts[0]) . '|' . static::docType($parts[1]);
+            return $this->buildDocType($parts[0]) . '|' . $this->buildDocType($parts[1]);
         }
 
         $classMap = config('tellaptepab.type.replace_types');
@@ -34,29 +45,32 @@ class PhpTypeMapper
             'boolean', 'true', 'false' => 'bool',
             default                    => $fullyQualifiedClassname,
         };
-
     }
 
-    public static function phpType(string $type): string
+    protected function buildPhpType()
     {
-        $type = static::docType($type);
-
-        if (str_ends_with($type, '[]')) {
+        if (str_ends_with($this->docType, '[]')) {
             return 'array';
         }
 
-        return $type;
+        return $this->docType;
     }
 
-    public static function simplifyType(PhpNamespace $namespace, string $docType): string
+    public function shouldDefinePhpDoc(): bool
     {
-        foreach (explode('|', $docType) as $type) {
+        return $this->docType !== $this->phpType;
+    }
+
+    public function simplify(PhpNamespace $namespace): string
+    {
+        foreach (explode('|', $this->docType) as $type) {
             if (str_contains($type, '\\')) {
                 $namespace->addUse(rtrim($type, '[]'));
             }
         }
 
-        return $namespace->simplifyType($docType);
+        return $namespace->simplifyType($this->docType);
     }
+
 
 }

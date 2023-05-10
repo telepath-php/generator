@@ -14,7 +14,7 @@ class ReturnTypeValidator extends Validator
     {
 
         /** @var Collection<string, string> $returnTypes */
-        $returnTypes = $document->methods->mapWithKeys(fn(Method $method) => [$method->name => $method->return()]);
+        $returnTypes = $document->methods->mapWithKeys(fn(Method $method) => [$method->name => $method->return()->telegramType]);
 
         $availableTypes = $document->types->mapWithKeys(fn(Type $type) => [$type->name => $type]);
         $invalidTypes = new Collection();

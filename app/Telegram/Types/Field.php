@@ -2,32 +2,24 @@
 
 namespace App\Telegram\Types;
 
-use App\Support\PhpTypeMapper;
-
 class Field
 {
 
     public bool $property = true;
 
+    public readonly \App\Php\Type $type;
+
     public function __construct(
         public readonly string $name,
-        public readonly string $type,
+        string $typeName,
         public readonly string $description,
-    ) {}
+    ) {
+        $this->type = new \App\Php\Type($typeName);
+    }
 
     public function optional(): bool
     {
         return str_starts_with($this->description, 'Optional.');
-    }
-
-    public function docType(): string
-    {
-        return PhpTypeMapper::docType($this->type);
-    }
-
-    public function phpType(): string
-    {
-        return PhpTypeMapper::phpType($this->type);
     }
 
     public function value(): ?string

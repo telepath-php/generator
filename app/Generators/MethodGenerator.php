@@ -2,7 +2,6 @@
 
 namespace App\Generators;
 
-use App\Support\PhpTypeMapper;
 use App\Telegram\Document;
 use App\Telegram\Methods\Method;
 use App\Telegram\Methods\Parameter;
@@ -58,48 +57,30 @@ class MethodGenerator extends Generator
 
         // Return type
         $returnType = $method->return();
-        $docType = PhpTypeMapper::docType($returnType);
-        $phpType = PhpTypeMapper::phpType($returnType);
-        $docType = $this->simplifyType($namespace, $docType);
-
-        $classMethod->setReturnType($phpType);
-        if ($docType !== $phpType) {
+        $classMethod->setReturnType($returnType->phpType);
+        if ($returnType->shouldDefinePhpDoc()) {
+            $docType = $returnType->simplify($namespace);
             $classMethod->addComment("@return {$docType}");
         }
 
         $exceptionClass = config('tellaptepab.method.exception');
         $namespace->addUse($exceptionClass);
         $classMethod->addComment('@throws ' . $namespace->simplifyType(config('tellaptepab.method.exception')));
-
     }
 
     protected function addParameter(PhpNamespace $namespace, PhpMethod $classMethod, Parameter $parameter): void
     {
-        $docType = PhpTypeMapper::docType($parameter->type);
-        $phpType = PhpTypeMapper::phpType($parameter->type);
-
-        $docType = $this->simplifyType($namespace, $docType);
+        $docType = $parameter->type->simplify($namespace);
 
         $classMethod->addComment("@param {$docType} \${$parameter->name} {$parameter->description}");
 
         $argument = $classMethod->addParameter($parameter->name)
-            ->setType($phpType);
+            ->setType($parameter->type->phpType);
 
         if ($parameter->optional()) {
             $argument->setNullable()
                 ->setDefaultValue(null);
         }
-    }
-
-    protected function simplifyType(PhpNamespace $namespace, string $docType): string
-    {
-        foreach (explode('|', $docType) as $type) {
-            if (str_contains($type, '\\')) {
-                $namespace->addUse(rtrim($type, '[]'));
-            }
-        }
-
-        return $namespace->simplifyType($docType);
     }
 
 }

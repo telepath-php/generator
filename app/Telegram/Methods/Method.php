@@ -2,6 +2,7 @@
 
 namespace App\Telegram\Methods;
 
+use App\Php\Type;
 use App\Support\ReturnTypeDiscovery;
 
 class Method
@@ -30,9 +31,15 @@ class Method
         }
     }
 
-    public function return(): ?string
+    public function return(): ?Type
     {
-        return match (config('tellaptepab.return_type_discovery_driver', 'local')) {
+        static $returnType;
+
+        if ($returnType) {
+            return new Type($returnType);
+        }
+
+        $returnType = match (config('tellaptepab.return_type_discovery_driver', 'local')) {
 
             'local'  => (new ReturnTypeDiscovery\LocalReturnTypeDiscovery())->discover($this),
 
@@ -41,6 +48,12 @@ class Method
             default  => throw new \UnexpectedValueException('Invalid return type discovery driver'),
 
         };
+
+        if (! $returnType) {
+            return null;
+        }
+
+        return new Type($returnType);
     }
 
 

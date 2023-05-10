@@ -71,15 +71,12 @@ class TypeGenerator extends Generator
                 continue;
             }
 
-            $docType = $field->docType();
-            $phpType = $field->phpType();
-
             $property = $class->addProperty($field->name)
-                ->setType($field->phpType())
+                ->setType($field->type->phpType)
                 ->addComment($field->description);
 
-            if ($docType !== $phpType) {
-                $property->addComment('@var ' . $namespace->simplifyType($docType));
+            if ($field->type->shouldDefinePhpDoc()) {
+                $property->addComment('@var ' . $field->type->simplify($namespace));
             }
 
             if ($field->optional()) {
@@ -105,13 +102,11 @@ class TypeGenerator extends Generator
                 continue;
             }
 
-            $docType = $field->docType();
-            $phpType = $field->phpType();
-
-            $method->addComment("@param {$namespace->simplifyType($docType)} \${$field->name} {$field->description}");
+            $docType = $field->type->simplify($namespace);
+            $method->addComment("@param {$docType} \${$field->name} {$field->description}");
 
             $parameter = $method->addParameter($field->name)
-                ->setType($phpType);
+                ->setType($field->type->phpType);
 
             if ($field->optional()) {
                 $parameter->setNullable()->setDefaultValue(null);

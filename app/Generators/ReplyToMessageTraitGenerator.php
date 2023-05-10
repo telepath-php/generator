@@ -2,12 +2,10 @@
 
 namespace App\Generators;
 
-use App\Support\PhpTypeMapper;
 use App\Telegram\Document;
 use App\Telegram\Methods\Method;
 use App\Telegram\Methods\Parameter;
 use Illuminate\Support\Facades\File;
-use JetBrains\PhpStorm\Language;
 use Nette\PhpGenerator\Method as PhpMethod;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
@@ -59,12 +57,9 @@ class ReplyToMessageTraitGenerator extends Generator
 
         // Return type
         $returnType = $methodInfo->return();
-        $docType = PhpTypeMapper::docType($returnType);
-        $phpType = PhpTypeMapper::phpType($returnType);
-        $docType = PhpTypeMapper::simplifyType($namespace, $docType);
-
-        $method->setReturnType($phpType);
-        if ($docType !== $phpType) {
+        $method->setReturnType($returnType->phpType);
+        if ($returnType->shouldDefinePhpDoc()) {
+            $docType = $returnType->simplify($namespace);
             $method->addComment("@return {$docType}");
         }
     }
@@ -73,15 +68,12 @@ class ReplyToMessageTraitGenerator extends Generator
 
     protected function addParameter(PhpNamespace $namespace, PhpMethod $method, Parameter $parameter): void
     {
-        $docType = PhpTypeMapper::docType($parameter->type);
-        $phpType = PhpTypeMapper::phpType($parameter->type);
-
-        $docType = PhpTypeMapper::simplifyType($namespace, $docType);
+        $docType = $parameter->type->simplify($namespace);
 
         $method->addComment("@param {$docType} \${$parameter->name} {$parameter->description}");
 
         $argument = $method->addParameter($parameter->name)
-            ->setType($phpType);
+            ->setType($parameter->type->phpType);
 
         if ($parameter->optional()) {
             $argument->setNullable()->setDefaultValue(null);

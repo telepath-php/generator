@@ -54,7 +54,7 @@ class Document
                 $parent->fields->add(
                     new Field(
                         $childField->name,
-                        $childField->type,
+                        $childField->type->telegramType,
                         preg_replace('/, (must be|always) .+$/u', '', $childField->description),
                     )
                 );
