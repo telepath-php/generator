@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use Nette\PhpGenerator\PhpNamespace;
+
 class PhpTypeMapper
 {
 
@@ -44,6 +46,17 @@ class PhpTypeMapper
         }
 
         return $type;
+    }
+
+    public static function simplifyType(PhpNamespace $namespace, string $docType): string
+    {
+        foreach (explode('|', $docType) as $type) {
+            if (str_contains($type, '\\')) {
+                $namespace->addUse(rtrim($type, '[]'));
+            }
+        }
+
+        return $namespace->simplifyType($docType);
     }
 
 }

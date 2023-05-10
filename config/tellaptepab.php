@@ -54,6 +54,7 @@ return [
 
     'generators' => [
 
+        \App\Generators\ReplyToMessageTraitGenerator::class,
         \App\Generators\TypeGenerator::class,
 
         \App\Generators\MethodGenerator::class,
@@ -143,6 +144,12 @@ return [
         'parent_class' => 'Telepath\\Layers\\Base',
 
         'exception' => 'Telepath\\Exceptions\\TelegramException',
+
+    ],
+
+    'extension' => [
+
+        'namespace' => 'Telepath\\Types\\Extensions',
 
     ],
 
