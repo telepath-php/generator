@@ -51,15 +51,17 @@ class MethodGenerator extends Generator
         $classMethod->addBody('return $this->raw(?, func_get_args());', [$method->name]);
 
         // Parameters
-        foreach ($method->parameters as $parameter) {
+        foreach ($method->parameters->sortByDesc->required as $parameter) {
             $this->addParameter($namespace, $classMethod, $parameter);
         }
 
         // Return type
         $returnType = $method->return();
+
+        $docType = $returnType->simplify($namespace);
         $classMethod->setReturnType($returnType->phpType);
+
         if ($returnType->shouldDefinePhpDoc()) {
-            $docType = $returnType->simplify($namespace);
             $classMethod->addComment("@return {$docType}");
         }
 
