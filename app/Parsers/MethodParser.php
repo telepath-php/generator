@@ -74,7 +74,7 @@ class MethodParser extends Parser
 
     protected function paragraphContainsMethod(?\DOMElement $paragraph)
     {
-        return str($paragraph->textContent)->explode('.')->strOfFirst()->test('/\bmethod\b/');
+        return str($paragraph->textContent)->explode('.')->strOfFirst()->test('/\bthis method\b/');
     }
 
 }
