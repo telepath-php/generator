@@ -6,6 +6,7 @@ use App\Telegram\Document;
 use App\Telegram\Methods\Method;
 use App\Telegram\Methods\Parameter;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Process;
 use Nette\PhpGenerator\ClassType as PhpClass;
 use Nette\PhpGenerator\Method as PhpMethod;
 use Nette\PhpGenerator\PhpFile;
@@ -39,6 +40,8 @@ class MethodGenerator extends Generator
 
         File::ensureDirectoryExists(dirname($filename));
         file_put_contents($filename, $content);
+
+        $this->runPint($filename);
     }
 
     protected function addMethod(PhpNamespace $namespace, PhpClass $class, Method $method)

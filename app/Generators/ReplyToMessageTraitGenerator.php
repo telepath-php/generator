@@ -34,6 +34,8 @@ class ReplyToMessageTraitGenerator extends Generator
 
         File::ensureDirectoryExists(dirname($filename));
         file_put_contents($filename, $content);
+
+        $this->runPint($filename);
     }
 
     protected function replyToUser(PhpNamespace $namespace, TraitType $trait, Method $methodInfo): void

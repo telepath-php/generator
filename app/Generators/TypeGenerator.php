@@ -7,6 +7,7 @@ use App\Telegram\Types\Field;
 use App\Telegram\Types\FieldList;
 use App\Telegram\Types\Type;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Process;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
@@ -23,6 +24,8 @@ class TypeGenerator extends Generator
 
             File::ensureDirectoryExists(dirname($filename));
             file_put_contents($filename, $content);
+
+            $this->runPint($filename);
         }
     }
 
