@@ -61,10 +61,10 @@ readonly class Type
         return $this->docType !== $this->phpType;
     }
 
-    public function simplify(PhpNamespace $namespace): string
+    public function simplify(PhpNamespace $namespace, ?string $fqClassName = null): string
     {
         foreach (explode('|', $this->docType) as $type) {
-            if (str_contains($type, '\\')) {
+            if (str_contains($type, '\\') && (! $fqClassName || $type !== $fqClassName)) {
                 $namespace->addUse(rtrim($type, '[]'));
             }
         }

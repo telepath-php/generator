@@ -56,7 +56,6 @@ class TypeGenerator extends Generator
         } else {
             $this->createMakeMethod($namespace, $class, $type);
         }
-
         $this->createProperties($namespace, $class, $type->fields);
 
         return (new PsrPrinter)->printFile($file);
@@ -65,18 +64,25 @@ class TypeGenerator extends Generator
 
     protected function createProperties(PhpNamespace $namespace, ClassType $class, FieldList $fields)
     {
+        $fqClassName = $namespace->getName() . '\\' . $class->getName();
+
         foreach ($fields as $field) {
 
             if (! $field->property) {
                 continue;
             }
 
+            // We needed to pull this up so the classes get imported into the namespace
+            // by simplifyDocType() before it gets added with setType() on the actual property
+            $simplifiedDocType = $field->type->simplify($namespace, $fqClassName);
+
+            ray($field->type->phpType);
             $property = $class->addProperty($field->name)
                 ->setType($field->type->phpType)
                 ->addComment($field->description);
 
             if ($field->type->shouldDefinePhpDoc()) {
-                $property->addComment('@var ' . $field->type->simplify($namespace));
+                $property->addComment('@var ' . $simplifiedDocType);
             }
 
             if ($field->optional()) {
@@ -90,6 +96,8 @@ class TypeGenerator extends Generator
 
     protected function createMakeMethod(PhpNamespace $namespace, ClassType $class, Type $type)
     {
+        $fqClassName = $namespace->getName() . '\\' . $class->getName();
+
         $method = $class->addMethod('make')
             ->setStatic()
             ->setReturnType('static');
@@ -98,11 +106,11 @@ class TypeGenerator extends Generator
         /** @var Field $field */
         foreach ($type->fields as $field) {
 
-            if ($field->value()) {
+            if ($field->value() && ! $field->optional()) {
                 continue;
             }
 
-            $docType = $field->type->simplify($namespace);
+            $docType = $field->type->simplify($namespace, $fqClassName);
             $method->addComment("@param {$docType} \${$field->name} {$field->description}");
 
             $parameter = $method->addParameter($field->name)

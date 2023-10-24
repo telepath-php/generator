@@ -44,6 +44,7 @@ abstract class Parser
             $text .= match ($node->nodeName) {
                 'img'   => $node->getAttribute('alt'),
                 'a'     => $withLinks ? $this->normalizeLinks($node) : $node->textContent,
+                'em'    => "<em>{$node->textContent}</em>",
                 default => $node->textContent,
             };
         }

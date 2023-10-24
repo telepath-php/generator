@@ -11,20 +11,29 @@ class Field
 
     public function __construct(
         public readonly string $name,
-        string $typeName,
+        protected string $typeName,
         public readonly string $description,
     ) {
-        $this->type = new \App\Php\Type($typeName);
+
+        if (preg_match('#“attach://<file_attach_name>”#', $this->description) === 1 && ! str_contains($this->typeName, 'InputFile')) {
+            $this->typeName .= ' or InputFile';
+        }
+
+        $this->type = new \App\Php\Type($this->typeName);
     }
 
     public function optional(): bool
     {
-        return str_starts_with($this->description, 'Optional.');
+        return preg_match('/<em>Optional\.?<\/em>/', $this->description) === 1;
     }
 
-    public function value(): ?string
+    public function value(): mixed
     {
-        $result = preg_match('/(?|always [^\w]?(\w+)[^\w]?|must be (\w+))/u', $this->description, $matches);
+        if ($this->typeName === 'True') {
+            return true;
+        }
+
+        $result = preg_match('/(?|, always [^\w]?(\w+)[^\w]?|must be \<em\>(\w+)\<\/em\>)/u', $this->description, $matches);
 
         if (! $result) {
             return null;
