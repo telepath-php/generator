@@ -10,6 +10,8 @@ class Method
 
     public readonly ?ParameterList $parameters;
 
+    protected ?string $discoveredReturnType = null;
+
     public function __construct(
         public readonly string $name,
         public readonly string $description,
@@ -33,13 +35,11 @@ class Method
 
     public function return(): ?Type
     {
-        static $returnType;
-
-        if ($returnType) {
-            return new Type($returnType);
+        if ($this->discoveredReturnType) {
+            return new Type($this->discoveredReturnType);
         }
 
-        $returnType = match (config('tellaptepab.return_type_discovery_driver', 'local')) {
+        $this->discoveredReturnType = match (config('tellaptepab.return_type_discovery_driver', 'local')) {
 
             'local'  => (new ReturnTypeDiscovery\LocalReturnTypeDiscovery())->discover($this),
 
@@ -49,11 +49,11 @@ class Method
 
         };
 
-        if (! $returnType) {
+        if ($this->discoveredReturnType === null) {
             return null;
         }
 
-        return new Type($returnType);
+        return new Type($this->discoveredReturnType);
     }
 
 
