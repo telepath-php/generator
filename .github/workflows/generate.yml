@@ -42,7 +42,7 @@ jobs:
 
       - name: Check for changes and generate code
         run: |
-          php tellaptepab/artisan check --cache-dir="$CACHE_DIR" --path="telepath/src/"
+          php tellaptepab/artisan check --cache-dir="$CACHE_DIR" telepath/src/
           version=$(cat "$CACHE_DIR/version.txt")
           echo "api_version=$version" >> $GITHUB_ENV
 

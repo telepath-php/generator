@@ -15,7 +15,7 @@ class CheckForChangesCommand extends Command
     public const API_DOCS_URI = 'https://core.telegram.org/bots/api';
 
     protected $signature = 'check
-        {--cache-path= : The path where the page cache should be saved}
+        {--cache-dir= : The path where the page cache should be saved}
         {--no-generate : Do not generate code if changes are detected}
         {path? : The path where the generated code should be saved}
     ';
@@ -47,7 +47,7 @@ class CheckForChangesCommand extends Command
 
     protected function cachePath(string $filename = ''): string
     {
-        $path = $this->option('cache-path') ?? storage_path('app/page-cache');
+        $path = $this->option('cache-dir') ?? storage_path('app/page-cache');
         File::ensureDirectoryExists($path);
 
         return rtrim($path . DIRECTORY_SEPARATOR . $filename, DIRECTORY_SEPARATOR);
