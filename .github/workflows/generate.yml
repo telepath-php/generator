@@ -43,8 +43,7 @@ jobs:
       - name: Check for changes and generate code
         run: |
           php tellaptepab/artisan check --cache-dir="$CACHE_DIR" telepath/src/
-          version=$(cat "$CACHE_DIR/version.txt")
-          echo "api_version=$version" >> $GITHUB_ENV
+          cat "$CACHE_DIR/environment.txt" >> $GITHUB_ENV
 
       - name: Commit Changes
         uses: peter-evans/create-pull-request@v5
