@@ -51,11 +51,13 @@ class TypeGenerator extends Generator
         if ($type->isParent()) {
             $class->setAbstract();
 
-            $factory = config('tellaptepab.type.factory_class');
-            $namespace->addUse($factory);
-            $class->addImplement($factory);
+            if ($type->childIdentifier() !== null) {
+                $factory = config('tellaptepab.type.factory_class');
+                $namespace->addUse($factory);
+                $class->addImplement($factory);
 
-            $this->createFactoryMethod($namespace, $class, $type);
+                $this->createFactoryMethod($namespace, $class, $type);
+            }
         } else {
             $this->createMakeMethod($namespace, $class, $type);
         }
@@ -89,7 +91,7 @@ class TypeGenerator extends Generator
 
             if ($field->optional()) {
                 $property->setNullable()->setInitialized();
-            } elseif ($field->value()) {
+            } elseif ($field->value() !== null) {
                 $property->setValue($field->value());
             }
 
@@ -149,7 +151,11 @@ class TypeGenerator extends Generator
             $namespace->addUse($child->className());
             $class = $namespace->simplifyType($child->className());
 
-            $method->addBody("    ? => new {$class}(\$data, \$bot),", [$value]);
+            if ($value !== null) {
+                $method->addBody("    ? => new {$class}(\$data, \$bot),", [$value]);
+            } else {
+                $method->addBody("    default => new {$class}(\$data, \$bot),");
+            }
         }
         $method->addBody('};');
     }

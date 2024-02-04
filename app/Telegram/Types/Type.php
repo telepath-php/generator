@@ -109,9 +109,23 @@ class Type
         }
 
         $key = $this->childIdentifier();
+        $valuePairs = 0;
+        $default = null;
+
         foreach ($this->children as $child) {
             $value = $child->fields->firstWhere('name', $key)?->value();
+
+            if ($value === null) {
+                $default = $child;
+                continue;
+            }
+
+            $valuePairs++;
             yield $value => $child;
+        }
+
+        if ($default && $valuePairs > 0) {
+            yield null => $default;
         }
     }
 
