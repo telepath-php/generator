@@ -79,7 +79,6 @@ class TypeGenerator extends Generator
             // by simplifyDocType() before it gets added with setType() on the actual property
             $simplifiedDocType = $field->type->simplify($namespace, $fqClassName);
 
-            ray($field->type->phpType);
             $property = $class->addProperty($field->name)
                 ->setType($field->type->phpType)
                 ->addComment($field->description);

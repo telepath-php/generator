@@ -3,6 +3,7 @@
 namespace App\Parsers;
 
 use App\Telegram\Types\Type;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\DomCrawler\Crawler;
 
 class TypeParser extends Parser
@@ -37,8 +38,21 @@ class TypeParser extends Parser
             $type->importFields($fields);
 
             // Set children by name
-            foreach ($children as $child) {
-                $type->children->put($child, $child);
+            foreach ($children as $childName) {
+
+                /** @var Type $child */
+                if ($child = $this->document->types[$childName] ?? null) {
+                    if ($child->parent !== null) {
+                        // Echo a warning, because we're overwriting something...
+                        Log::warning("{$name} is referencing {$childName} as Child, but {$childName} has already {$child->parent} as parent.");
+                    }
+
+                    $child->parent = $type;
+                    $type->children->put($childName, $child);
+                    continue;
+                }
+
+                $type->children->put($childName, $childName);
             }
 
             // Set parent and replace the childs name with a reference
@@ -48,6 +62,8 @@ class TypeParser extends Parser
             $this->document->types->put($name, $type);
 
         }
+
+        // Link parents
 
         $this->document->pullUpCommonFields();
     }
