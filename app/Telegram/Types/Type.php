@@ -62,15 +62,41 @@ class Type
         return $this->parent?->className() ?? config('tellaptepab.type.parent_class');
     }
 
+    protected ?string $childIdentifierCache;
+
     public function childIdentifier(): ?string
     {
         if ($this->children->count() === 0) {
             return null;
         }
 
-        return $this->children->first()->fields
-            ->first(fn(Field $field) => $field->value() !== null)
-            ?->name;
+        if (! isset($this->childIdentifierCache)) {
+
+            // We need to look in every child since "InaccessibleMessage" contains the hint but "Message" does not.
+            $children = [];
+            foreach ($this->children as $child) {
+                foreach ($child->fields as $field) {
+                    if (($value = $field->valueFromDescription()) !== null) {
+                        $children[$child->name][$field->name] = $value;
+                    }
+                }
+            }
+
+            if (count($children) === 0) {
+                return null;
+            }
+
+            // Debug
+//            ray($children)->label($this->name);
+
+            $keys = array_keys(collect($children)->first());
+            $childIdentifier = $keys[0];
+
+            $this->childIdentifierCache = $childIdentifier;
+
+        }
+
+        return $this->childIdentifierCache;
     }
 
     /**

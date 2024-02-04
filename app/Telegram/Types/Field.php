@@ -27,19 +27,36 @@ class Field
         return preg_match('/<em>Optional\.?<\/em>/', $this->description) === 1;
     }
 
+    public function valueFromDescription(): mixed
+    {
+        /*
+         * Examples:
+         * always “creator”
+         * Always 0
+         * must be <em>all_private_chats</em>
+         */
+        $result = preg_match('/(?|always “(\w+)”|always (\d+)|must be \<em\>(\w+)\<\/em\>)/ui', $this->description, $matches);
+
+        if (! $result) {
+            return null;
+        }
+
+        $value = $matches[1];
+
+        if (is_numeric($value)) {
+            $value = (int) $value;
+        }
+
+        return $value;
+    }
+
     public function value(): mixed
     {
         if ($this->typeName === 'True') {
             return true;
         }
 
-        $result = preg_match('/(?|, always [^\w]?(\w+)[^\w]?|must be \<em\>(\w+)\<\/em\>)/u', $this->description, $matches);
-
-        if (! $result) {
-            return null;
-        }
-
-        return $matches[1];
+        return $this->valueFromDescription();
     }
 
 }
