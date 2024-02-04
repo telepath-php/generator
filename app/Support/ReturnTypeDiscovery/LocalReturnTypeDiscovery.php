@@ -20,6 +20,7 @@ class LocalReturnTypeDiscovery extends ReturnTypeDiscovery
             '/Returns .*? as ((?:Array of )?[\w]+) (?:on success|object)/ui',
             '/On success, (?|if .+? ([\w]+) is returned, otherwise ([\w]+) is returned)/ui',
             '/On success, .*?((?:Array of )?[\w]+) (?:that .*? |objects? )?is returned/ui',
+            '/in form of (\w+) object/ui'
         ];
 
         foreach ($patterns as $pattern) {
