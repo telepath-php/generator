@@ -51,6 +51,10 @@ class MethodParser extends Parser
 
     protected function paragraphContainsMethod(Crawler $paragraph): bool
     {
+        if ($paragraph->count() === 0) {
+            return false;
+        }
+
         $firstSentence = str($paragraph->text())->explode('.')->first();
 
         return (bool) preg_match('/(?|this method|A simple method)/ui', $firstSentence);

@@ -19,9 +19,13 @@ class TypeParser extends Parser
                 continue;
             }
 
-            $description = $this->description($section);
-            $fields = $this->fields($section);
-            $children = $this->children($section);
+            try {
+                $description = $this->description($section);
+                $fields = $this->fields($section);
+                $children = $this->children($section);
+            } catch (\Exception $e) {
+                ray($name);
+            }
 
             $isType = $fields
                 || $children
@@ -75,7 +79,13 @@ class TypeParser extends Parser
 
     protected function description(Crawler $section): string
     {
-        return $this->normalizeText($section->filter('p'));
+        $descriptionHtml = $section->filter('p');
+
+        if (! $descriptionHtml->count()) {
+            return '';
+        }
+
+        return $this->normalizeText($descriptionHtml);
     }
 
     /**
