@@ -22,7 +22,7 @@ class GenerateCode implements ShouldQueue
     public function handle(): void
     {
         /** @var Generator $generator */
-        foreach (config('tellaptepab.generators') as $generator) {
+        foreach (config('generator.generators') as $generator) {
 
             (new $generator)->generate($this->document);
 

@@ -100,7 +100,7 @@ return [
 
         'replace_types' => [
 
-            'InputFile' => 'Telepath\\Types\\InputFile',
+            'InputFile' => 'Telepath\\Files\\InputFile',
 
         ],
 

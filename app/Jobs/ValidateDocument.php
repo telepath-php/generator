@@ -18,7 +18,7 @@ class ValidateDocument implements ShouldQueue
 
     public function handle(): void
     {
-        foreach (config('tellaptepab.validators') as $validator) {
+        foreach (config('generator.validators') as $validator) {
 
             $validator = new $validator();
 

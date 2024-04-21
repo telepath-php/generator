@@ -39,7 +39,7 @@ class Method
             return new Type($this->discoveredReturnType);
         }
 
-        $this->discoveredReturnType = match (config('tellaptepab.return_type_discovery_driver', 'local')) {
+        $this->discoveredReturnType = match (config('generator.return_type_discovery_driver', 'local')) {
 
             'local'  => (new ReturnTypeDiscovery\LocalReturnTypeDiscovery())->discover($this),
 

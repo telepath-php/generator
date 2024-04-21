@@ -33,10 +33,10 @@ readonly class Type
             return $this->buildDocType($parts[0]) . '|' . $this->buildDocType($parts[1]);
         }
 
-        $classMap = config('tellaptepab.type.replace_types');
+        $classMap = config('generator.type.replace_types');
         $fullyQualifiedClassname = isset($classMap[$type])
             ? $classMap[$type]
-            : config('tellaptepab.type.namespace') . '\\' . $type;
+            : config('generator.type.namespace') . '\\' . $type;
 
         return match (strtolower($type)) {
             'string'                   => 'string',

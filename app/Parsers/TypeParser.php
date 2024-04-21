@@ -15,7 +15,7 @@ class TypeParser extends Parser
 
             $name = $this->name($section);
 
-            if (in_array($name, array_keys(config('tellaptepab.type.replace_types')))) {
+            if (in_array($name, array_keys(config('generator.type.replace_types')))) {
                 continue;
             }
 

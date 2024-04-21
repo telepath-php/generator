@@ -57,7 +57,7 @@ abstract class Parser
         $doc = new \DOMDocument();
         $importedNode = $doc->importNode($node, true);
 
-        $pageUri = config('tellaptepab.url');                               // https://core.telegram.org/bots/api
+        $pageUri = config('generator.url');                               // https://core.telegram.org/bots/api
         $baseUri = implode('/', array_slice(explode('/', $pageUri), 0, 3)); // https://core.telegram.org
 
         $href = $importedNode->getAttribute('href');

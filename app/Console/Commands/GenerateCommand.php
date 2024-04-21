@@ -16,7 +16,7 @@ class GenerateCommand extends Command
 
     public function handle(): void
     {
-        $buildPath = $this->argument('path') ?? config('tellaptepab.build_path');
+        $buildPath = $this->argument('path') ?? config('generator.build_path');
         $buildPath = realpath($buildPath);
 
         $this->info("Generating code in {$buildPath}");

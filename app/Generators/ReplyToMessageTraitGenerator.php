@@ -22,7 +22,7 @@ class ReplyToMessageTraitGenerator extends Generator
         $file = new PhpFile();
         $file->addComment('This file is auto-generated.');
 
-        $namespace = $file->addNamespace(config('tellaptepab.extension.namespace'));
+        $namespace = $file->addNamespace(config('generator.extension.namespace'));
         $trait = $namespace->addTrait('RepliesToMessage');
 
         $this->replyToUser($namespace, $trait, $sendMessageMethod);

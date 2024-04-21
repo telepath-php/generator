@@ -42,7 +42,7 @@ class TypeGenerator extends Generator
             ->setExtends($type->parentClassName())
             ->addComment($type->description);
 
-        $extensions = config('tellaptepab.type.extensions');
+        $extensions = config('generator.type.extensions');
         foreach ($extensions[$type->name] ?? [] as $trait) {
             $namespace->addUse($trait);
             $class->addTrait($trait);
@@ -52,7 +52,7 @@ class TypeGenerator extends Generator
             $class->setAbstract();
 
             if ($type->childIdentifier() !== null) {
-                $factory = config('tellaptepab.type.factory_class');
+                $factory = config('generator.type.factory_class');
                 $namespace->addUse($factory);
                 $class->addImplement($factory);
 
@@ -140,7 +140,7 @@ class TypeGenerator extends Generator
         $method->addParameter('data')
             ->setType('array');
 
-        $botClass = config('tellaptepab.type.bot_class');
+        $botClass = config('generator.type.bot_class');
         $namespace->addUse($botClass);
         $method->addParameter('bot')
             ->setDefaultValue(null)

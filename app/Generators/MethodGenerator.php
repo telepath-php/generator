@@ -21,12 +21,12 @@ class MethodGenerator extends Generator
         $file = new PhpFile();
         $file->addComment('This file is auto-generated.');
 
-        $className = config('tellaptepab.method.classname');
+        $className = config('generator.method.classname');
 
         $namespace = $file->addNamespace(substr($className, 0, strrpos($className, '\\')));
 
         $class = $namespace->addClass(substr($className, strrpos($className, '\\') + 1))
-            ->setExtends(config('tellaptepab.method.parent_class'))
+            ->setExtends(config('generator.method.parent_class'))
             ->setAbstract();
 
         foreach ($document->methods as $method) {
@@ -68,9 +68,9 @@ class MethodGenerator extends Generator
             $classMethod->addComment("@return {$docType}");
         }
 
-        $exceptionClass = config('tellaptepab.method.exception');
+        $exceptionClass = config('generator.method.exception');
         $namespace->addUse($exceptionClass);
-        $classMethod->addComment('@throws ' . $namespace->simplifyType(config('tellaptepab.method.exception')));
+        $classMethod->addComment('@throws ' . $namespace->simplifyType(config('generator.method.exception')));
     }
 
     protected function addParameter(PhpNamespace $namespace, PhpMethod $classMethod, Parameter $parameter): void

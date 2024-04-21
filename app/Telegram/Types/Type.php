@@ -49,7 +49,7 @@ class Type
 
     public function namespace(): string
     {
-        return config('tellaptepab.type.namespace');
+        return config('generator.type.namespace');
     }
 
     public function className(): string
@@ -59,7 +59,7 @@ class Type
 
     public function parentClassName(): string
     {
-        return $this->parent?->className() ?? config('tellaptepab.type.parent_class');
+        return $this->parent?->className() ?? config('generator.type.parent_class');
     }
 
     protected ?string $childIdentifierCache;
