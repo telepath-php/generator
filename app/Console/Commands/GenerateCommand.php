@@ -20,7 +20,7 @@ class GenerateCommand extends Command
         $buildPath = realpath($buildPath);
 
         $this->info("Generating code in {$buildPath}");
-        config()->set('tellaptepab.build_path', $buildPath);
+        config()->set('generator.build_path', $buildPath);
 
         dispatch(new ParseDocumentation());
     }
