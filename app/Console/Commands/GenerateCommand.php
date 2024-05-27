@@ -7,7 +7,6 @@ use Illuminate\Console\Command;
 
 class GenerateCommand extends Command
 {
-
     protected $signature = 'generate
         {path? : The path where the generated code should be saved}
     ';
@@ -24,5 +23,4 @@ class GenerateCommand extends Command
 
         dispatch(new ParseDocumentation());
     }
-
 }

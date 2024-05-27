@@ -6,7 +6,6 @@ use App\Telegram\Methods\Method;
 
 class LocalReturnTypeDiscovery extends ReturnTypeDiscovery
 {
-
     public function discover(Method $type): ?string
     {
         $description = strip_tags($type->description);
@@ -20,7 +19,7 @@ class LocalReturnTypeDiscovery extends ReturnTypeDiscovery
             '/Returns .*? as ((?:Array of )?[\w]+) (?:on success|object)/ui',
             '/On success, (?|if .+? ([\w]+) is returned, otherwise ([\w]+) is returned)/ui',
             '/On success, .*?((?:Array of )?[\w]+) (?:that .*? |objects? )?is returned/ui',
-            '/in form of (\w+) object/ui'
+            '/in form of (\w+) object/ui',
         ];
 
         foreach ($patterns as $pattern) {
@@ -29,8 +28,8 @@ class LocalReturnTypeDiscovery extends ReturnTypeDiscovery
             if (preg_match($pattern, $description, $matches)) {
 
                 return collect($matches)->slice(1)
-                    ->map(fn($item) => str($item)->ucfirst())
-                    ->map(fn($item) => preg_replace('/\bMessages\b/ui', 'Message', $item))
+                    ->map(fn ($item) => str($item)->ucfirst())
+                    ->map(fn ($item) => preg_replace('/\bMessages\b/ui', 'Message', $item))
                     ->join(' or ');
 
             }
@@ -39,5 +38,4 @@ class LocalReturnTypeDiscovery extends ReturnTypeDiscovery
 
         return null;
     }
-
 }

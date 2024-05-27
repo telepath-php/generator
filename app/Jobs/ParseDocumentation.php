@@ -14,10 +14,11 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class ParseDocumentation implements ShouldQueue
 {
-
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function handle(): void
     {
@@ -34,7 +35,7 @@ class ParseDocumentation implements ShouldQueue
 
         }
 
-//        $this->debugReturnTypes($document);
+        //        $this->debugReturnTypes($document);
 
         dispatch(new ValidateDocument($document));
     }
@@ -47,11 +48,11 @@ class ParseDocumentation implements ShouldQueue
             $return = $method->return();
 
             ray()->table([
-                'name'        => $method->name,
+                'name' => $method->name,
                 'description' => $method->description,
-                'return'      => $return->telegramType,
-                'docType'     => $return->docType,
-                'phpType'     => $return->phpType,
+                'return' => $return->telegramType,
+                'docType' => $return->docType,
+                'phpType' => $return->phpType,
             ])->green()
                 ->if(is_null($return))->red();
 
@@ -64,5 +65,4 @@ class ParseDocumentation implements ShouldQueue
 
         ray(Cache::get('openai_tokens', 0))->label('OpenAI Tokens');
     }
-
 }

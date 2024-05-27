@@ -4,7 +4,6 @@ namespace App\Telegram\Types;
 
 class Field
 {
-
     public bool $property = true;
 
     public readonly \App\Php\Type $type;
@@ -58,5 +57,4 @@ class Field
 
         return $this->valueFromDescription();
     }
-
 }

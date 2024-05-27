@@ -8,7 +8,6 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class TypeParser extends Parser
 {
-
     public function parse(): void
     {
         foreach ($this->sections() as $section) {
@@ -53,6 +52,7 @@ class TypeParser extends Parser
 
                     $child->parent = $type;
                     $type->children->put($childName, $child);
+
                     continue;
                 }
 
@@ -104,8 +104,8 @@ class TypeParser extends Parser
             $items = $row->filter('td');
 
             return [
-                'field'       => $items->eq(0)->text(),
-                'type'        => $items->eq(1)->text(),
+                'field' => $items->eq(0)->text(),
+                'type' => $items->eq(1)->text(),
                 'description' => $this->normalizeText($items->eq(2), true),
             ];
 
@@ -135,7 +135,7 @@ class TypeParser extends Parser
             return [];
         }
 
-        return $items->each(fn(Crawler $item) => $item->text());
+        return $items->each(fn (Crawler $item) => $item->text());
     }
 
     protected function descriptionContainsObject(string $text): bool
@@ -147,5 +147,4 @@ class TypeParser extends Parser
                 'Represents',
             ]);
     }
-
 }

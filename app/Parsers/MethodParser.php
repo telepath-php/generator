@@ -7,7 +7,6 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class MethodParser extends Parser
 {
-
     public function parse(): void
     {
         foreach ($this->sections() as $section) {
@@ -67,13 +66,12 @@ class MethodParser extends Parser
             $items = $row->filter('td');
 
             return [
-                'parameter'   => $items->eq(0)->text(),
-                'type'        => $items->eq(1)->text(),
-                'required'    => $items->eq(2)->text(),
+                'parameter' => $items->eq(0)->text(),
+                'type' => $items->eq(1)->text(),
+                'required' => $items->eq(2)->text(),
                 'description' => $this->normalizeText($items->eq(3), true),
             ];
 
         });
     }
-
 }

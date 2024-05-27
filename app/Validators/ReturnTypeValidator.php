@@ -9,14 +9,13 @@ use Illuminate\Support\Collection;
 
 class ReturnTypeValidator extends Validator
 {
-
     public function validate(Document $document): void
     {
 
         /** @var Collection<string, string> $returnTypes */
-        $returnTypes = $document->methods->mapWithKeys(fn(Method $method) => [$method->name => $method->return()->telegramType]);
+        $returnTypes = $document->methods->mapWithKeys(fn (Method $method) => [$method->name => $method->return()->telegramType]);
 
-        $availableTypes = $document->types->mapWithKeys(fn(Type $type) => [$type->name => $type]);
+        $availableTypes = $document->types->mapWithKeys(fn (Type $type) => [$type->name => $type]);
         $invalidTypes = new Collection();
 
         $returnTypes->each(function ($returnType, $name) use ($availableTypes, $invalidTypes) {
@@ -42,7 +41,7 @@ class ReturnTypeValidator extends Validator
 
         $messages = $invalidTypes->count() > 0
             ? str($invalidTypes
-                ->map(fn($type, $name) => "  - Method $name has invalid return type: $type")
+                ->map(fn ($type, $name) => "  - Method $name has invalid return type: $type")
                 ->join("\n"))->prepend("Errors:\n")
             : 'There were no errors.';
 
@@ -58,5 +57,4 @@ class ReturnTypeValidator extends Validator
         }
 
     }
-
 }

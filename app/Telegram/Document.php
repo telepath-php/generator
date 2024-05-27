@@ -9,7 +9,6 @@ use Illuminate\Support\Collection;
 
 class Document
 {
-
     /** @var Collection<string, Type> */
     public readonly Collection $types;
 
@@ -29,6 +28,7 @@ class Document
                 return $type;
             }
         }
+
         return null;
     }
 
@@ -71,5 +71,4 @@ class Document
 
         }
     }
-
 }
