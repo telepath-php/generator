@@ -13,7 +13,6 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^11.8",
         "laravel/pint": "^1.13",
-        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "nette/php-generator": "^4.0",
         "openai-php/client": "^0.4.1",
