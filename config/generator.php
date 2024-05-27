@@ -57,6 +57,7 @@ return [
         \App\Generators\ReplyToMessageTraitGenerator::class,
         \App\Generators\TypeGenerator::class,
 
+        \App\Generators\EnumTypesGenerator::class,
         \App\Generators\MethodGenerator::class,
 
     ],
@@ -80,6 +81,8 @@ return [
     'type' => [
 
         'namespace' => 'Telepath\\Telegram',
+
+        'enum_namespace' => 'Telepath\\Types\\Enums',
 
         'parent_class' => 'Telepath\\Types\\Type',
 
