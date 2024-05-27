@@ -6,7 +6,6 @@ use App\Telegram\Document;
 use App\Telegram\Methods\Method;
 use App\Telegram\Methods\Parameter;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Process;
 use Nette\PhpGenerator\ClassType as PhpClass;
 use Nette\PhpGenerator\Method as PhpMethod;
 use Nette\PhpGenerator\PhpFile;
@@ -15,7 +14,6 @@ use Nette\PhpGenerator\PsrPrinter;
 
 class MethodGenerator extends Generator
 {
-
     public function generate(Document $document)
     {
         $file = new PhpFile();
@@ -48,7 +46,7 @@ class MethodGenerator extends Generator
     {
         // Definition
         $classMethod = $class->addMethod($method->name)
-            ->addComment($method->description . "\n");
+            ->addComment($method->description."\n");
 
         // Body
         $classMethod->addBody('return $this->raw(?, func_get_args());', [$method->name]);
@@ -70,7 +68,7 @@ class MethodGenerator extends Generator
 
         $exceptionClass = config('generator.method.exception');
         $namespace->addUse($exceptionClass);
-        $classMethod->addComment('@throws ' . $namespace->simplifyType(config('generator.method.exception')));
+        $classMethod->addComment('@throws '.$namespace->simplifyType(config('generator.method.exception')));
     }
 
     protected function addParameter(PhpNamespace $namespace, PhpMethod $classMethod, Parameter $parameter): void
@@ -87,5 +85,4 @@ class MethodGenerator extends Generator
                 ->setDefaultValue(null);
         }
     }
-
 }

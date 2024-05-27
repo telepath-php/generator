@@ -7,11 +7,11 @@ use Symfony\Component\DomCrawler\Crawler;
 
 abstract class Parser
 {
-
     public function __construct(
         protected Document $document,
         protected Crawler $crawler,
-    ) {}
+    ) {
+    }
 
     abstract public function parse(): void;
 
@@ -42,9 +42,9 @@ abstract class Parser
         /** @var \DOMNode $node */
         foreach ($nodes as $node) {
             $text .= match ($node->nodeName) {
-                'img'   => $node->getAttribute('alt'),
-                'a'     => $withLinks ? $this->normalizeLinks($node) : $node->textContent,
-                'em'    => "<em>{$node->textContent}</em>",
+                'img' => $node->getAttribute('alt'),
+                'a' => $withLinks ? $this->normalizeLinks($node) : $node->textContent,
+                'em' => "<em>{$node->textContent}</em>",
                 default => $node->textContent,
             };
         }
@@ -63,8 +63,8 @@ abstract class Parser
         $href = $importedNode->getAttribute('href');
 
         $href = match (substr($href, 0, 1)) {
-            '#'     => $pageUri . $href,
-            '/'     => $baseUri . $href,
+            '#' => $pageUri.$href,
+            '/' => $baseUri.$href,
             default => $href,
         };
 
@@ -74,5 +74,4 @@ abstract class Parser
 
         return $html;
     }
-
 }

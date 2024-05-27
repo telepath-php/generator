@@ -6,7 +6,6 @@ use Illuminate\Support\Collection;
 
 class Type
 {
-
     public FieldList $fields;
 
     /** @var Collection<int, Type> */
@@ -34,7 +33,7 @@ class Type
             );
         }
 
-        $this->fields = $this->fields->sortBy(fn(Field $field) => $field->optional());
+        $this->fields = $this->fields->sortBy(fn (Field $field) => $field->optional());
     }
 
     public function isParent(): bool
@@ -54,7 +53,7 @@ class Type
 
     public function className(): string
     {
-        return $this->namespace() . '\\' . $this->name;
+        return $this->namespace().'\\'.$this->name;
     }
 
     public function parentClassName(): string
@@ -87,7 +86,7 @@ class Type
             }
 
             // Debug
-//            ray($children)->label($this->name);
+            //            ray($children)->label($this->name);
 
             $keys = array_keys(collect($children)->first());
             $childIdentifier = $keys[0];
@@ -117,6 +116,7 @@ class Type
 
             if ($value === null) {
                 $default = $child;
+
                 continue;
             }
 
@@ -128,6 +128,4 @@ class Type
             yield null => $default;
         }
     }
-
-
 }

@@ -12,12 +12,12 @@ use Illuminate\Queue\SerializesModels;
 
 class GenerateCode implements ShouldQueue
 {
-
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(
         protected Document $document,
-    ) {}
+    ) {
+    }
 
     public function handle(): void
     {
@@ -28,5 +28,4 @@ class GenerateCode implements ShouldQueue
 
         }
     }
-
 }

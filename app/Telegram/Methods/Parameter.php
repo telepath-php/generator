@@ -6,7 +6,6 @@ use App\Php\Type;
 
 readonly class Parameter
 {
-
     public Type $type;
 
     public function __construct(
@@ -22,6 +21,4 @@ readonly class Parameter
     {
         return $this->required === 'Optional';
     }
-
-
 }

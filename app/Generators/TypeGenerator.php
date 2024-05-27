@@ -7,7 +7,6 @@ use App\Telegram\Types\Field;
 use App\Telegram\Types\FieldList;
 use App\Telegram\Types\Type;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Process;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
@@ -15,7 +14,6 @@ use Nette\PhpGenerator\PsrPrinter;
 
 class TypeGenerator extends Generator
 {
-
     public function generate(Document $document)
     {
         foreach ($document->types as $type) {
@@ -69,7 +67,7 @@ class TypeGenerator extends Generator
 
     protected function createProperties(PhpNamespace $namespace, ClassType $class, FieldList $fields)
     {
-        $fqClassName = $namespace->getName() . '\\' . $class->getName();
+        $fqClassName = $namespace->getName().'\\'.$class->getName();
 
         foreach ($fields as $field) {
 
@@ -86,7 +84,7 @@ class TypeGenerator extends Generator
                 ->addComment($field->description);
 
             if ($field->type->shouldDefinePhpDoc()) {
-                $property->addComment('@var ' . $simplifiedDocType);
+                $property->addComment('@var '.$simplifiedDocType);
             }
 
             if ($field->optional()) {
@@ -100,7 +98,7 @@ class TypeGenerator extends Generator
 
     protected function createMakeMethod(PhpNamespace $namespace, ClassType $class, Type $type)
     {
-        $fqClassName = $namespace->getName() . '\\' . $class->getName();
+        $fqClassName = $namespace->getName().'\\'.$class->getName();
 
         $method = $class->addMethod('make')
             ->setStatic()
@@ -159,6 +157,4 @@ class TypeGenerator extends Generator
         }
         $method->addBody('};');
     }
-
-
 }

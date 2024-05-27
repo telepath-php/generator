@@ -14,7 +14,6 @@ use Nette\PhpGenerator\TraitType;
 
 class ReplyToMessageTraitGenerator extends Generator
 {
-
     public function generate(Document $document)
     {
         $sendMessageMethod = $document->methods->get('sendMessage');
@@ -29,7 +28,7 @@ class ReplyToMessageTraitGenerator extends Generator
 
         $this->replyToChat($namespace, $trait, $sendMessageMethod);
 
-        $filename = psr_build_path($namespace->getName() . '\\' . $trait->getName());
+        $filename = psr_build_path($namespace->getName().'\\'.$trait->getName());
         $content = (new PsrPrinter())->printFile($file);
 
         File::ensureDirectoryExists(dirname($filename));
@@ -42,7 +41,7 @@ class ReplyToMessageTraitGenerator extends Generator
     {
         // Definition
         $method = $trait->addMethod('replyToUser');
-        $relevantParameters = $methodInfo->parameters->filter(fn(Parameter $parameter) => ! in_array($parameter->name, ['chat_id']));
+        $relevantParameters = $methodInfo->parameters->filter(fn (Parameter $parameter) => ! in_array($parameter->name, ['chat_id']));
 
         // Body
         $method->addBody('return $this->sendMessage(');
@@ -66,7 +65,9 @@ class ReplyToMessageTraitGenerator extends Generator
         }
     }
 
-    protected function replyToChat(PhpNamespace $namespace, TraitType $trait, Method $methodInfo): void {}
+    protected function replyToChat(PhpNamespace $namespace, TraitType $trait, Method $methodInfo): void
+    {
+    }
 
     protected function addParameter(PhpNamespace $namespace, PhpMethod $method, Parameter $parameter): void
     {
@@ -81,6 +82,4 @@ class ReplyToMessageTraitGenerator extends Generator
             $argument->setNullable()->setDefaultValue(null);
         }
     }
-
-
 }

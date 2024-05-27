@@ -11,10 +11,11 @@ use Illuminate\Queue\SerializesModels;
 
 class ValidateDocument implements ShouldQueue
 {
-
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(protected Document $document) {}
+    public function __construct(protected Document $document)
+    {
+    }
 
     public function handle(): void
     {
@@ -31,5 +32,4 @@ class ValidateDocument implements ShouldQueue
         dispatch(new GenerateCode($this->document));
 
     }
-
 }
