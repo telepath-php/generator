@@ -4,9 +4,8 @@ namespace App\Php;
 
 use Nette\PhpGenerator\PhpNamespace;
 
-readonly class Type
+class Type
 {
-
     public string $phpType;
 
     public string $docType;
@@ -24,26 +23,26 @@ readonly class Type
             $arrayType = $this->buildDocType(substr($type, 9));
 
             return str_contains($arrayType, '|')
-                ? str_replace('|', '[]|', $arrayType) . '[]'
-                : $arrayType . '[]';
+                ? str_replace('|', '[]|', $arrayType).'[]'
+                : $arrayType.'[]';
         }
 
         $parts = str($type)->split('/(?: or |, | and )/', 2);
         if (count($parts) > 1) {
-            return $this->buildDocType($parts[0]) . '|' . $this->buildDocType($parts[1]);
+            return $this->buildDocType($parts[0]).'|'.$this->buildDocType($parts[1]);
         }
 
         $classMap = config('generator.type.replace_types');
         $fullyQualifiedClassname = isset($classMap[$type])
             ? $classMap[$type]
-            : config('generator.type.namespace') . '\\' . $type;
+            : config('generator.type.namespace').'\\'.$type;
 
         return match (strtolower($type)) {
-            'string'                   => 'string',
-            'integer', 'int'           => 'int',
-            'float', 'float number'    => 'float',
+            'string' => 'string',
+            'integer', 'int' => 'int',
+            'float', 'float number' => 'float',
             'boolean', 'true', 'false' => 'bool',
-            default                    => $fullyQualifiedClassname,
+            default => $fullyQualifiedClassname,
         };
     }
 
@@ -72,5 +71,9 @@ readonly class Type
         return $namespace->simplifyType($this->docType);
     }
 
-
+    public function prependType(string $phpType): void
+    {
+        $this->phpType = $phpType.'|'.$this->phpType;
+        $this->docType = $phpType.'|'.$this->docType;
+    }
 }
