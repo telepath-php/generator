@@ -11,23 +11,23 @@
         "php": "^8.2",
         "ext-dom": "*",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^10.0",
-        "laravel/pint": "^1.0",
-        "laravel/sanctum": "^3.2",
-        "laravel/tinker": "^2.8",
+        "laravel/framework": "^11.8",
+        "laravel/pint": "^1.13",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^2.9",
         "nette/php-generator": "^4.0",
         "openai-php/client": "^0.4.1",
-        "symfony/css-selector": "^6.2",
-        "symfony/dom-crawler": "^6.2",
-        "spatie/laravel-ray": "^1.32"
+        "symfony/css-selector": "^7.0",
+        "symfony/dom-crawler": "^7.0",
+        "spatie/laravel-ray": "^1.35"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.9.1",
-        "laravel/sail": "^1.18",
-        "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^7.0",
-        "phpunit/phpunit": "^10.0",
-        "spatie/laravel-ignition": "^2.0"
+        "fakerphp/faker": "^1.23",
+        "laravel/sail": "^1.26",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.0",
+        "phpunit/phpunit": "^10.5",
+        "spatie/laravel-ignition": "^2.4"
     },
     "autoload": {
         "psr-4": {
