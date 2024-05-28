@@ -90,6 +90,8 @@ return [
 
         'bot_class' => 'Telepath\\Bot',
 
+        'parse_mode_enum' => 'Telepath\\Support\\ParseMode\\ParseMode',
+
         /*
         |--------------------------------------------------------------------------
         | Replacement Types

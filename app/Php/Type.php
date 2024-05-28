@@ -17,6 +17,21 @@ class Type
         $this->phpType = $this->buildPhpType();
     }
 
+    protected function fullyQualifiedClassname(string $type): string
+    {
+        $classMap = config('generator.type.replace_types');
+
+        if (isset($classMap[$type])) {
+            return $classMap[$type];
+        }
+
+        if (! str_contains($type, '\\')) {
+            return config('generator.type.namespace').'\\'.$type;
+        }
+
+        return $type;
+    }
+
     protected function buildDocType(string $type)
     {
         if (str_starts_with(strtolower($type), 'array of')) {
@@ -32,10 +47,7 @@ class Type
             return $this->buildDocType($parts[0]).'|'.$this->buildDocType($parts[1]);
         }
 
-        $classMap = config('generator.type.replace_types');
-        $fullyQualifiedClassname = isset($classMap[$type])
-            ? $classMap[$type]
-            : config('generator.type.namespace').'\\'.$type;
+        $fullyQualifiedClassname = $this->fullyQualifiedClassname($type);
 
         return match (strtolower($type)) {
             'string' => 'string',
