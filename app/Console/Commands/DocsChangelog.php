@@ -77,9 +77,9 @@ class DocsChangelog extends DocsCommand
         foreach ($parentNode->childNodes as $node) {
 
             match ($node->nodeName) {
-                'strong' => $text .= '**'.trim($node->textContent).'**',
-                'a' => $text .= '['.$node->textContent.']('.$this->formatLink($node).')',
-                'em' => $text .= '_'.trim($node->textContent).'_',
+                'strong' => $text .= ' **'.trim($node->textContent).'** ',
+                'a' => $text .= ' '.$this->formatLink($node).' ',
+                'em' => $text .= ' _'.trim($node->textContent).'_ ',
                 '#text' => $text .= trim($node->textContent),
             };
         }
