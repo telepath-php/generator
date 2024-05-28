@@ -15,6 +15,13 @@ readonly class Parameter
         public string $description,
     ) {
         $this->type = new Type($typeName);
+
+        if ($this->name === 'parse_mode') {
+            $this->type->prependType(config('generator.type.parse_mode_enum'));
+
+            dump($this->type->docType);
+            dump($this->type->phpType);
+        }
     }
 
     public function optional(): bool

@@ -16,8 +16,6 @@ class Field
 
         if (preg_match('#“attach://<file_attach_name>”#', $this->description) === 1 && ! str_contains($this->typeName, 'InputFile')) {
             $this->typeName .= ' or InputFile';
-        } elseif ($this->name === 'parse_mode') {
-            $this->typeName = config('generator.type.parse_mode_enum').' or '.$this->typeName;
         }
 
         $this->type = new \App\Php\Type($this->typeName);
