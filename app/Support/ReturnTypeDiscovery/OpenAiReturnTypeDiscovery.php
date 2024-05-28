@@ -25,7 +25,7 @@ class OpenAiReturnTypeDiscovery extends ReturnTypeDiscovery
             'presence_penalty' => 2,
         ]);
 
-        Cache::increment('openai_tokens', $result->usage->totalTokens);
+        Cache::increment('telepath-generator:openai_tokens', $result->usage->totalTokens);
 
         return trim(preg_replace('/\bobjects?$/i', '', $result->choices[0]->text));
     }
