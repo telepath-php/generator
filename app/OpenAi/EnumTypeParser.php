@@ -30,7 +30,7 @@ PROMPT;
         ]);
 
         $result = $this->ai->chat()->create([
-            'model' => 'gpt-4o',
+            'model' => 'gpt-4o-2024-05-13',
             'seed' => 35827,
             'temperature' => 0,
             'response_format' => [
