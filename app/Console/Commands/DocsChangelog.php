@@ -74,13 +74,16 @@ class DocsChangelog extends DocsCommand
     {
         $text = '';
 
+        /** @var \DOMNode $node */
         foreach ($parentNode->childNodes as $node) {
 
-            match ($node->nodeName) {
-                'strong' => $text .= ' **'.trim($node->textContent).'** ',
-                'a' => $text .= ' '.$this->formatLink($node).' ',
-                'em' => $text .= ' _'.trim($node->textContent).'_ ',
-                '#text' => $text .= trim($node->textContent),
+            $text .= match ($node->nodeName) {
+                'strong' => ' **'.trim($node->textContent).'** ',
+                'a' => ' '.$this->formatLink($node).' ',
+                'em' => ' _'.trim($node->textContent).'_ ',
+                '#text' => trim($node->textContent),
+                'code' => ' `'.$node->textContent.'` ',
+                default => ' '.$node->textContent.' ',
             };
         }
         $text .= PHP_EOL;
