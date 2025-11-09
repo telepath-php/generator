@@ -14,11 +14,12 @@ class LocalReturnTypeDiscovery extends ReturnTypeDiscovery
         $description = preg_replace('/\b(a|an)\s/i', '', $description);
 
         $patterns = [
+            '/Returns (?:the (?:[\w]+ )?)?([\w]+) on success/ui',
             '/Returns (?:the (?:[\w]+ )?)?([\w]+) (?:of .*? |object )?on success/ui',
             '/Returns ((?:Array of )?[\w]+) object/ui',
             '/Returns .*? as ((?:Array of )?[\w]+) (?:on success|object)/ui',
             '/On success, (?|if .+? ([\w]+) is returned, otherwise ([\w]+) is returned)/ui',
-            '/On success, .*?((?:Array of )?[\w]+) (?:that .*? |objects? )?is returned/ui',
+            '/On success, .*?((?:Array of )?[\w]+) (?:objects? )?(?:that .*? )?is returned/ui',
             '/in form of (\w+) object/ui',
         ];
 
